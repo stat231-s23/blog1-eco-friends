@@ -24,8 +24,7 @@ Next, we read our csv files:
 restaurantmap_full <- read_csv("data/restaurantmap.csv", show_col_types = FALSE)
 restmap <- restaurantmap_full %>%
   select(-c(websites, postalCode, country, categories, address, ...1)) %>%
-  filter(str_detect(name, regex('Mcdonald|Sonic|Taco Bell|Arby|Subway|Dairy Queen|Burger King', ignore_case = TRUE))) %>%
-  case_when(str_detect(name, regex('Mcdonald', ignore_case = TRUE)))
+  filter(str_detect(name, regex('Mcdonald|Sonic|Taco Bell|Arby|Subway|Dairy Queen|Burger King', ignore_case = TRUE)))
 ```
 
 ## Data Wrangling
@@ -33,7 +32,7 @@ restmap <- restaurantmap_full %>%
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-mapview(restaurantmap_full, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE)
+mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE)
 ```
 
 
