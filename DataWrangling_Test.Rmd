@@ -36,3 +36,11 @@ mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE
 ```
 
 
+```{r}
+#This is our wrangling for the nutrition information:
+nutritioninfo <- read_csv("data/fastfood.csv", show_col_types = FALSE)%>%
+  select(restaurant, item, calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)
+  
+```
+
+
