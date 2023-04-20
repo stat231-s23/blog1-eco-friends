@@ -24,7 +24,16 @@ Next, we read our csv files:
 restaurantmap_full <- read_csv("data/restaurantmap.csv", show_col_types = FALSE)
 restmap <- restaurantmap_full %>%
   select(-c(websites, postalCode, country, categories, address, ...1)) %>%
-  filter(str_detect(name, regex('Mcdonald|Sonic|Taco Bell|Arby|Subway|Dairy Queen|Burger King', ignore_case = TRUE)))
+  filter(str_detect(name, regex('Mcdonald|Sonic|Taco Bell|Arby|Subway|Dairy Queen|Burger King|Chick-fil-a', ignore_case = TRUE))) %>%
+  mutate(name = case_when(str_detect(name, regex('Mcdonald', ignore_case = TRUE)) == TRUE ~ "Mcdonalds", 
+                          str_detect(name, regex('Sonic', ignore_case = TRUE)) == TRUE ~ "Sonic",
+                          str_detect(name, regex('Taco Bell', ignore_case = TRUE)) == TRUE ~ "Taco Bell",
+                          str_detect(name, regex('Arby', ignore_case = TRUE)) == TRUE ~ "Arbys",
+                          str_detect(name, regex('Subway', ignore_case = TRUE)) == TRUE ~ "Subway",
+                          str_detect(name, regex('Dairy Queen', ignore_case = TRUE)) == TRUE ~ "Dairy Queen",
+                          str_detect(name, regex('Burger King', ignore_case = TRUE)) == TRUE ~ "Burger King",
+                          str_detect(name, regex('Chick-fil-a', ignore_case = TRUE)) == TRUE ~ "Chick Fil-A",
+                          TRUE ~ "Other"))
 ```
 
 ## Data Wrangling
