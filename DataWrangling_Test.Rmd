@@ -64,4 +64,12 @@ Let's make sure our map data set works!
 # Testing map
 mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
 ```
-
+ 
+ Lastly, let's write our new datasets to csv files!
+ 
+```{r}
+# Exporting CSVs
+write_csv(restmap, file = 'data/restmap.csv')
+write_csv(nutritioninfo, file = 'data/nutritioninfo.csv')
+```
+ 
