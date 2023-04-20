@@ -25,10 +25,10 @@ Next, we read our csv files:
 ```{r}
 # Wendy
 # Load map data
-restaurantmap_full <- read_csv("data/restaurantmap.csv", show_col_types = FALSE)
+restaurantmap_full <- read_csv("data/messydata/restaurantmap.csv", show_col_types = FALSE)
 # Cora
 # Load nutrition info
-nutritioninfo <- read_csv("data/fastfood.csv", show_col_types = FALSE)%>%
+nutritioninfo <- read_csv("data/messydata/fastfood.csv", show_col_types = FALSE)%>%
   # Remove unnecessary data
   select(restaurant, item, calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)
 ```
