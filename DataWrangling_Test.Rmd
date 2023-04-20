@@ -41,7 +41,7 @@ restmap <- restaurantmap_full %>%
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE)
+mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
 ```
 
 
