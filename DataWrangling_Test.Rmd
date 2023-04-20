@@ -1,5 +1,5 @@
 ---
-title: "DataWrangling_Test"
+title: "Testing our data wrangling"
 output: pdf_document
 date: "2023-04-20"
 ---
@@ -13,7 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 First, we load our libraries:
 
 ```{r}
+# For data wrangling
 library(tidyverse)
+# For testing our map data
 library(mapview)
 ```
 
@@ -21,10 +23,29 @@ library(mapview)
 Next, we read our csv files:
 
 ```{r}
+# Wendy
+# Load map data
 restaurantmap_full <- read_csv("data/restaurantmap.csv", show_col_types = FALSE)
+# Cora
+# Load nutrition info
+nutritioninfo <- read_csv("data/fastfood.csv", show_col_types = FALSE)%>%
+  # Remove unnecessary data
+  select(restaurant, item, calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)
+```
+
+## Data Wrangling
+
+Wrangling our restaurant map locations data:
+
+```{r}
+# Wendy
+# Wrangling our map data
 restmap <- restaurantmap_full %>%
+  # Remove unnecessary columns
   select(-c(websites, postalCode, country, categories, address, ...1)) %>%
+  # Only keep the 8 restaurants that we have nutritional data
   filter(str_detect(name, regex('Mcdonald|Sonic|Taco Bell|Arby|Subway|Dairy Queen|Burger King|Chick-fil-a', ignore_case = TRUE))) %>%
+  # Handle all variations of restaurant names so that all names are written the same way.
   mutate(name = case_when(str_detect(name, regex('Mcdonald', ignore_case = TRUE)) == TRUE ~ "Mcdonalds", 
                           str_detect(name, regex('Sonic', ignore_case = TRUE)) == TRUE ~ "Sonic",
                           str_detect(name, regex('Taco Bell', ignore_case = TRUE)) == TRUE ~ "Taco Bell",
@@ -36,20 +57,11 @@ restmap <- restaurantmap_full %>%
                           TRUE ~ "Other"))
 ```
 
-## Data Wrangling
+Let's make sure our map data set works!
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
+```{r, echo=FALSE}
+# Wendy
+# Testing map
 mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
 ```
-
-
-```{r}
-#This is our wrangling for the nutrition information:
-nutritioninfo <- read_csv("data/fastfood.csv", show_col_types = FALSE)%>%
-  select(restaurant, item, calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)
-  
-```
-
 
