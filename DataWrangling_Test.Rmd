@@ -23,10 +23,9 @@ library(mapview)
 Next, we read our csv files:
 
 ```{r}
-# Wendy
+# We met all as a group and worked on the code together
 # Load map data
 restaurantmap_full <- read_csv("data/messydata/restaurantmap.csv", show_col_types = FALSE)
-# Cora
 # Load nutrition info
 nutritioninfo <- read_csv("data/messydata/fastfood.csv", show_col_types = FALSE)%>%
   # Remove unnecessary data
@@ -38,7 +37,7 @@ nutritioninfo <- read_csv("data/messydata/fastfood.csv", show_col_types = FALSE)
 Wrangling our restaurant map locations data:
 
 ```{r}
-# Wendy
+# We met all as a group and worked on the code together
 # Wrangling our map data
 restmap <- restaurantmap_full %>%
   # Remove unnecessary columns
