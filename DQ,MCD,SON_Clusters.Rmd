@@ -1,0 +1,22 @@
+---
+title: "DQ, McDonalds, Sonic Clusters"
+output: pdf_document
+date: "2023-04-20"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading Libraries and Data
+
+First, we load our libraries:
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(broom)
+library(GGally)
+```
+
+Now, We are going to make elbow plots to decide how many clusters we want for each environment:
