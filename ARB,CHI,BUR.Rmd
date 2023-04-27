@@ -1,0 +1,290 @@
+---
+title: "ARB,CHI,BUR"
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-04-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      tidy = FALSE,
+                      size = "small")
+```
+
+## Loading Libraries and Data
+
+First, we load our libraries:
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+library(broom)
+library(GGally)
+library(purrr)
+```
+
+Now we need to import our data set, and create data sets containing just data on McDonalds, Sonic and DQ respecively:
+
+```{r}
+#Loading in the CSV
+nutritional_data <-  read.csv("data/nutritioninfo.csv")
+
+#Arby's Data Set For 2-way clusters
+arb_nutrition <- nutritional_data %>%
+  filter(restaurant == "Arbys")%>%
+  select(item, protein, calories)
+
+#Arby's Data Set for all variables
+arb_nutrition_data <- nutritional_data %>%
+  filter(restaurant == "Arbys")
+
+#Burger King Data Set for 2-way clusters
+bk_nutrition <- nutritional_data %>%
+  filter(restaurant == "Burger King")%>%
+  select(item, protein, calories)
+
+#Burger King Data Set for all variables
+bk_nutrition <- nutritional_data %>%
+  filter(restaurant == "Burger King")
+
+#Chick Fila Data set
+chf_nutrition <- nutritional_data %>%
+   filter(restaurant == "Chick Fil-A")%>%
+  select(item, protein, calories)
+
+#Chick Fila Data Set for all variables
+chf_nutrition_data <- nutritional_data %>%
+   filter(restaurant == "Chick Fil-A")
+```
+
+# McDonald's K-Means Clustering
+
+Now, We are going to make elbow plots to decide how many clusters we want for each McDonalds:
+
+```{r}
+arb_clusters_data <- arb_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# Iterate through clustering algorithm for 10 different values of k
+elbow_plot1 <- tibble(k = 1:10) %>%
+  mutate(
+    # List-column of 10 kmeans objects 
+    # (apply `kmeans()` to each value of `k`)
+    kmeans_arb = purrr::map(k, ~kmeans(arb_clusters_data, .x, nstart = 20)),
+    # List-column of "glanced" model summaries for each kmeans object
+    # (apply `glance()` to each corresponding result after running `kmeans()`)
+    glanced = purrr::map(kmeans_arb, glance)) %>% 
+  # Turn `glanced` list-column into regular tibble columns
+  unnest(cols = c(glanced))
+
+# Construct elbow plot
+ggplot(elbow_plot1, aes(x = k, y = tot.withinss)) +
+  geom_point() + 
+  geom_line() +
+  scale_x_continuous(breaks = 1:10) +
+  labs(x = "Number of clusters (k)", 
+       y = "Total within-cluster sum of squares")
+
+```
+
+> Based on the Elbow Plot Above, I am going to use four clusters, because there is still a large jump from three clusters to four, but then a very small jump between four clusters and five clusters.
+
+## Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
+```{r}
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 4
+arb_clusters_4 <- arb_clusters_data %>% 
+  kmeans(centers = 4, nstart = 20)
+
+arb_clusters_c4 <- augment(arb_clusters_4, arb_nutrition)
+
+ggplot(arb_clusters_c4, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = arb_clusters_c4, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Arbys Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1500)) +
+      ylim(c(0,100))
+
+#Get Important Data Points and What items are in which cluster
+arb_summaries <- tidy(arb_clusters_4)
+arb_summaries
+
+arb_clusters_4$centers
+
+cluster_list <- split(arb_nutrition$item, arb_clusters_4$cluster)
+cluster_list
+```
+
+
+
+# Now we repeat the same process with Burger King:
+
+## First an elbow plot to find the best number of clusters to use
+```{r}
+bk_clusters_data <- bk_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# Iterate through clustering algorithm for 10 different values of k
+elbow_plot2 <- tibble(k = 1:10) %>%
+  mutate(
+    # List-column of 10 kmeans objects 
+    # (apply `kmeans()` to each value of `k`)
+    kmeans_bk = purrr::map(k, ~kmeans(bk_clusters_data, .x, nstart = 20)),
+    # List-column of "glanced" model summaries for each kmeans object
+    # (apply `glance()` to each corresponding result after running `kmeans()`)
+    glanced = purrr::map(kmeans_bk, glance)) %>% 
+  # Turn `glanced` list-column into regular tibble columns
+  unnest(cols = c(glanced))
+
+# Construct elbow plot
+ggplot(elbow_plot2, aes(x = k, y = tot.withinss)) +
+  geom_point() + 
+  geom_line() +
+  scale_x_continuous(breaks = 1:10) +
+  labs(x = "Number of clusters (k)", 
+       y = "Total within-cluster sum of squares")
+```
+
+> Based on this elbow plot I am going to use three clusters because again there is a large drop in within-cluster sum of squares, and not a very large drop from 3 to four.
+
+## Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
+```{r}
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+bk_clusters_3 <- bk_clusters_data %>% 
+  kmeans(centers = 3, nstart = 20)
+
+bk_clusters_c3 <- augment(bk_clusters_3, bk_nutrition)
+
+ggplot(bk_clusters_c3, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = bk_clusters_c3, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Burger King Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,2500)) +
+      ylim(c(0,90))
+
+#Get Important Data Points and What items are in which cluster
+bk_summaries <- tidy(bk_clusters_3)
+bk_summaries
+
+bk_clusters_3$centers
+
+cluster_list <- split(bk_nutrition$item, bk_clusters_3$cluster)
+cluster_list
+```
+
+
+# Now we are going to do the same process but with Chick Fila:
+
+## First an elbow plot to determin number of clusters:
+
+```{r}
+chf_clusters_data <- chf_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# Iterate through clustering algorithm for 10 different values of k
+elbow_plot3 <- tibble(k = 1:10) %>%
+  mutate(
+    # List-column of 10 kmeans objects 
+    # (apply `kmeans()` to each value of `k`)
+    kmeans_chf = purrr::map(k, ~kmeans(chf_clusters_data, .x, nstart = 20)),
+    # List-column of "glanced" model summaries for each kmeans object
+    # (apply `glance()` to each corresponding result after running `kmeans()`)
+    glanced = purrr::map(kmeans_chf, glance)) %>% 
+  # Turn `glanced` list-column into regular tibble columns
+  unnest(cols = c(glanced))
+
+# Construct elbow plot
+ggplot(elbow_plot3, aes(x = k, y = tot.withinss)) +
+  geom_point() + 
+  geom_line() +
+  scale_x_continuous(breaks = 1:10) +
+  labs(x = "Number of clusters (k)", 
+       y = "Total within-cluster sum of squares")
+
+```
+
+
+> For Chick-Fila I am going to use 3 clusters because while there is not a large jump between 2 and 3 clusters there is a relatively small jump from 3 to 4.
+
+
+## Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
+
+```{r}
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+chf_clusters_3 <- chf_clusters_data %>% 
+  kmeans(centers = 3, nstart = 20)
+
+chf_clusters_c3 <- augment(chf_clusters_3, chf_nutrition)
+
+ggplot(chf_clusters_c3, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = chf_clusters_c5, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Chick Fila Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1000)) +
+      ylim(c(0,60))
+
+#Get Important Data Points and What items are in which cluster
+chf_summaries <- tidy(chf_clusters_3)
+chf_summaries
+
+chf_clusters_3$centers
+
+cluster_list <- split(chf_nutrition$item, chf_clusters_3$cluster)
+cluster_list
+```
+
