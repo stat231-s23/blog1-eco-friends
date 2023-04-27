@@ -6,7 +6,9 @@ date: "2023-04-20"
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      tidy = FALSE,
+                      size = "small")
 ```
 
 ## Loading Libraries and Data
@@ -55,7 +57,7 @@ sonic_nutrition_data <- nutritional_data %>%
    filter(restaurant == "Sonic")
 ```
 
-#McDonald's K-Means Clustering
+# McDonald's K-Means Clustering
 
 Now, We are going to make elbow plots to decide how many clusters we want for each McDonalds:
 
@@ -88,7 +90,7 @@ ggplot(elbow_plot1, aes(x = k, y = tot.withinss)) +
 
 > Based on the Elbow Plot Above, I am going to use four clusters, because there is still a large jump from three clusters to four, but then a very small jump between four clusters and five clusters.
 
-##Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
+## Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
 ```{r}
 # set the seed for reproducibility
 set.seed(23)
@@ -132,9 +134,9 @@ cluster_list
 
 
 
-#Now we repeat the same process with sonic:
+# Now we repeat the same process with sonic:
 
-##First an elbow plot to find the best number of clusters to use
+## First an elbow plot to find the best number of clusters to use
 ```{r}
 sonic_clusters_data <- sonic_nutrition %>% 
   select(calories, protein)%>%
@@ -163,7 +165,7 @@ ggplot(elbow_plot2, aes(x = k, y = tot.withinss)) +
 
 > Based on this elbow plot I am going to use three clusters because again there is a large drop in within-cluster sum of squares, and not a very large drop from 3 to four.
 
-##Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
+## Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
 ```{r}
 # set the seed for reproducibility
 set.seed(23)
@@ -206,9 +208,9 @@ cluster_list
 ```
 
 
-#Now we are going to do the same process but with Dairy Queen:
+# Now we are going to do the same process but with Dairy Queen:
 
-##First an elbow plot to determin number of clusters:
+## First an elbow plot to determin number of clusters:
 
 ```{r}
 dq_clusters_data <- dq_nutrition %>% 
@@ -241,7 +243,7 @@ ggplot(elbow_plot3, aes(x = k, y = tot.withinss)) +
 > For Dairy Queen I am going to use five clusters because while there is not a large jump between 3 and 4 clusters there is a relatively large jump from 3 to 4.
 
 
-##Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
+## Now we are going to cluster based on calories and protein, and create a graph and a list of which items are in which clusters
 
 ```{r}
 # set the seed for reproducibility
