@@ -237,6 +237,8 @@ cluster_list
 
 ## Calories vs Protein
 
+### Graph of Clusters
+
 ```{r}
 #Selecting our two variables
 dq_clusters_data <- dq_nutrition %>% 
@@ -272,15 +274,25 @@ ggplot(dq_clusers_c5, aes(x = calories, y = protein)) +
   theme_classic() +
   xlim(c(0,1500)) +
       ylim(c(0,60))
+```
 
+
+### Information About Clusters
+```{r}
 #Get Important Data Points and What items are in which cluster
 dq_summaries <- tidy(dq_clusers_5)
-dq_summaries
 
-dq_clusers_5$centers
+kable(dq_summaries)
+
+dq_table <- augment(dq_clusers_5, dq_nutrition)%>%
+  pivot_wider(names_from = .cluster, values_from = item)
 
 cluster_list <- split(dq_nutrition$item, dq_clusers_5$cluster)
-cluster_list
+#names(cluster_list) <- c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5")
+kable(cluster_list, col.names = paste("Cluster", 1:5))
+
+
+
 ```
 
 
