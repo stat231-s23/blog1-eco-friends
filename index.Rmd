@@ -10,7 +10,7 @@ output:
 ```{r setup, include = FALSE}
 # Set code chunk defaults 
 # Consider adding `message = FALSE` option
-knitr::opts_chunk$set(echo = FALSE) 
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warnings = FALSE) 
                       
 # Set R environment options
 options(knitr.kable.NA = '')
@@ -54,9 +54,35 @@ sonic_nutrition <- nutritional_data %>%
 sonic_nutrition_data <- nutritional_data %>%
    filter(restaurant == "Sonic")
 
+#Arby's Data Set For 2-way clusters
+arb_nutrition <- nutritional_data %>%
+  filter(restaurant == "Arbys")%>%
+  select(item, protein, calories)
+
+#Arby's Data Set for all variables
+arb_nutrition_data <- nutritional_data %>%
+  filter(restaurant == "Arbys")
+
+#Burger King Data Set for 2-way clusters
+bk_nutrition <- nutritional_data %>%
+  filter(restaurant == "Burger King")%>%
+  select(item, protein, calories)
+
+#Burger King Data Set for all variables
+bk_nutrition <- nutritional_data %>%
+  filter(restaurant == "Burger King")
+
+#Chick Fila Data set
+chf_nutrition <- nutritional_data %>%
+   filter(restaurant == "Chick Fil-A")%>%
+  select(item, protein, calories)
+
+#Chick Fila Data Set for all variables
+chf_nutrition_data <- nutritional_data %>%
+   filter(restaurant == "Chick Fil-A")
+
 ```
 
-# Arbys
 
 This is an R Markdown blog template. This document will be knit to HTML to produce a webpage that will be hosted publicly via GitHub.
 
@@ -69,7 +95,7 @@ This is an R Markdown blog template. This document will be knit to HTML to produ
 3. Commit and push changes when you are ready. The website may take a couple minutes to update automatically after the push, but you may need to clear your browser's cache or view the page in a private/incognito window to see the changes more quickly. 
 
 
-# Burger King
+
 
 You can include text, `code`, and output as usual. Remember to take full advantage of Markdown and follow our [Style Guide](https://acstat231-f22.github.io/home/style-guide.html#Text_narration).
 
@@ -203,8 +229,6 @@ For typesetting equations appropriately, check out the [AMS-LaTeX quick referenc
 
 
 
-# Chick-Fil-A
-
 ## Tabbed subsections {.tabset}
 
 Each subsection below the "Tabbed subsections" section heading will appear in a tab. See R Markdown Cookbook [Section 7.6: Put content in tabs](https://bookdown.org/yihui/rmarkdown-cookbook/html-tabs.html) for additional customization options. 
@@ -267,6 +291,153 @@ mtcars %>%
 <!-- End columns environment with matching length indicator-->
 
 
+
+# Arbys
+
+```{r}
+arb_clusters_data <- arb_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 4
+arb_clusters_4 <- arb_clusters_data %>% 
+  kmeans(centers = 4, nstart = 20)
+
+arb_clusters_c4 <- augment(arb_clusters_4, arb_nutrition)
+
+ggplot(arb_clusters_c4, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = arb_clusters_c4, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Arby's Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1200)) +
+      ylim(c(0,75))
+
+#Get Important Data Points and What items are in which cluster
+arb_summaries <- tidy(arb_clusters_4)
+arb_summaries
+
+arb_clusters_4$centers
+
+cluster_list <- split(arb_nutrition$item, arb_clusters_4$cluster)
+cluster_list
+```
+
+
+
+
+# Burger King
+
+```{r}
+bk_clusters_data <- bk_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+bk_clusters_3 <- bk_clusters_data %>% 
+  kmeans(centers = 3, nstart = 20)
+
+bk_nutrition <- bk_nutrition %>%
+drop_na
+  
+bk_clusters_c3 <- augment(bk_clusters_3, bk_nutrition)
+
+ggplot(bk_clusters_c3, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = bk_clusters_c3, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Burger King Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1500)) +
+      ylim(c(0,75))
+
+#Get Important Data Points and What items are in which cluster
+bk_summaries <- tidy(bk_clusters_3)
+bk_summaries
+
+bk_clusters_3$centers
+
+cluster_list <- split(bk_nutrition$item, bk_clusters_3$cluster)
+cluster_list
+```
+
+# Chick-Fil-A
+
+```{r}
+chf_clusters_data <- chf_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+chf_clusters_3 <- chf_clusters_data %>% 
+  kmeans(centers = 3, nstart = 20)
+
+chf_clusters_c3 <- augment(chf_clusters_3, chf_nutrition)
+
+ggplot(chf_clusters_c3, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = chf_clusters_c3, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Chick-fil-A Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,900)) +
+      ylim(c(0,60))
+
+#Get Important Data Points and What items are in which cluster
+chf_summaries <- tidy(chf_clusters_3)
+chf_summaries
+
+chf_clusters_3$centers
+
+cluster_list <- split(chf_nutrition$item, chf_clusters_3$cluster)
+cluster_list
+```
 
 
 # Dairy Queen
