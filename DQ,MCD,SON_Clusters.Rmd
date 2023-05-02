@@ -44,7 +44,7 @@ dq_nutrition <- nutritional_data %>%
   select(item, protein, calories)
 
 #Dairy Queen Data Set for all variables
-dq_nutrition <- nutritional_data %>%
+dq_nutrition_data <- nutritional_data %>%
   filter(restaurant == "Dairy Queen")
 
 #Sonic Data set
@@ -285,4 +285,129 @@ dq_clusers_5$centers
 cluster_list <- split(dq_nutrition$item, dq_clusers_5$cluster)
 cluster_list
 ```
+
+
+
+
+## Now I am going to cluster based on all the categories, Just in case anyone is interested in that:
+
+```{r}
+#This for mcdonalds (we used 4 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+mcd_clusters_data_full <- mcd_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+mcd_full_scaled <- mcd_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+mcd_kmean_full_scaled <- mcd_full_scaled %>% 
+  kmeans(centers = 5, nstart = 20)
+
+#adding the items and restaurants back in
+mcd_nutrition_full_scaled_clusters <- augment(mcd_kmean_full_scaled, mcd_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(mcd_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
+
+```{r}
+#This for sonic (we used 3 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+sonic_clusters_data_full <- sonic_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+sonic_full_scaled <- sonic_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+sonic_kmean_full_scaled <- sonic_full_scaled %>% 
+  kmeans(centers = 3, nstart = 20)
+
+#adding the items and restaurants back in
+sonic_nutrition_full_scaled_clusters <- augment(sonic_kmean_full_scaled, sonic_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(sonic_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+
+
+
+```
+
+
+
+```{r}
+#This is for dq (we used 5 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+dq_clusters_data_full <- dq_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+dq_full_scaled <- dq_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+dq_kmean_full_scaled <- dq_full_scaled %>% 
+  kmeans(centers = 5, nstart = 20)
+
+#adding the items and restaurants back in
+dq_nutrition_full_scaled_clusters <- augment(dq_kmean_full_scaled, dq_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(dq_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
+
 
