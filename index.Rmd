@@ -129,7 +129,21 @@ arb_summaries
 arb_clusters_4$centers
 
 cluster_list <- split(arb_nutrition$item, arb_clusters_4$cluster)
-cluster_list
+
+# make into dataframe to print nicely with kable
+arb_dat <- matrix(NA
+              , nrow=max(arb_summaries$size)
+              , ncol=length(arb_summaries$cluster))
+
+for (i in 1:max(arb_clusters_4$cluster)){
+  jmax <- length(cluster_list[[i]])
+  for (j in 1:jmax)
+    arb_dat[j,i] <- cluster_list[[i]][j]
+}
+
+arb_dat %>%
+  kable(col.names = c("Group 1", "Bring on the calories and protein!"
+                      , "Group 3", "If you're on a diet . . ."))
 ```
 
 
@@ -288,8 +302,6 @@ dq_table <- augment(dq_clusers_5, dq_nutrition)%>%
   pivot_wider(names_from = .cluster, values_from = item)
 
 cluster_list <- split(dq_nutrition$item, dq_clusers_5$cluster)
-#names(cluster_list) <- c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4", "Cluster 5")
-kable(cluster_list, col.names = paste("Cluster", 1:5))
 
 
 
