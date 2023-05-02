@@ -1,7 +1,7 @@
 ---
-title: "Your Project Title Here"
+title: "Health At Fast-Food Restaurants"
 author: "Cora, Sophia, Wendy"
-date: "Add a date"
+date: "Due May 9th"
 output:
   rmdformats::readthedown:
     highlight: "kate"
@@ -17,7 +17,11 @@ options(knitr.kable.NA = '')
 
 # Load packages
 library(tidyverse)
-
+library(kableExtra)
+library(rvest)
+library(stringr)
+library(broom)
+library(GGally)
 ```
 
 # Intro
@@ -153,8 +157,6 @@ Markdown syntax:
 You may need to push your updates to GitHub to see if the videos work.
 
 
-
-
 ## Equations
 
 You might include equations if part of the purpose of your blog is to explain a statistical method. There are two ways to include equations:
@@ -164,7 +166,6 @@ You might include equations if part of the purpose of your blog is to explain a 
 $$\frac{\sigma^2_b}{\sigma^2_b + \sigma^2_e}$$
 
 For typesetting equations appropriately, check out the [AMS-LaTeX quick reference](https://github.com/manuelemacchia/math-latex/blob/master/amsmath.pdf) or take a look at the *Symbols in math mode* section of this  [cheat sheet](https://users.dickinson.edu/~richesod/latex/latexcheatsheet.pdf)  (or do some extra Googling---there are *many* resources).
-
 
 
 # Formatting
