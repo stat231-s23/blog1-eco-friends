@@ -62,6 +62,7 @@ chf_nutrition_data <- nutritional_data %>%
 # Arby's K-Means Clustering
 
 Now, We are going to make elbow plots to decide how many clusters we want for each Arbys:
+How much meet are you actually getting from Arbys
 
 ```{r}
 arb_clusters_data <- arb_nutrition %>% 
