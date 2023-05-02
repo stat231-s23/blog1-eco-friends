@@ -1,5 +1,5 @@
 ---
-title: "Your Project Title Here"
+title: "Health At Fast Food Restaurants"
 author: "Cora, Sophia, Wendy"
 date: "Add a date"
 output:
@@ -17,10 +17,46 @@ options(knitr.kable.NA = '')
 
 # Load packages
 library(tidyverse)
+library(kableExtra)
+library(rvest)
+library(stringr)
+library(broom)
+library(GGally)
+library(ggrepel)
+
+#Loading In our data
+nutritional_data <-  read.csv("data/nutritioninfo.csv")
+
+#McDonald's Data Set For 2-way clusters
+mcd_nutrition <- nutritional_data %>%
+  filter(restaurant == "Mcdonalds")%>%
+  select(item, protein, calories)
+
+#McDonald's Data Set for all variables
+mcd_nutrition_data <- nutritional_data %>%
+  filter(restaurant == "Mcdonalds")
+
+#Dairy Queen Data Set for 2-way clusters
+dq_nutrition <- nutritional_data %>%
+  filter(restaurant == "Dairy Queen")%>%
+  select(item, protein, calories)
+
+#Dairy Queen Data Set for all variables
+dq_nutrition_data <- nutritional_data %>%
+  filter(restaurant == "Dairy Queen")
+
+#Sonic Data set
+sonic_nutrition <- nutritional_data %>%
+   filter(restaurant == "Sonic")%>%
+  select(item, protein, calories)
+
+#Sonic Data Set for all variables
+sonic_nutrition_data <- nutritional_data %>%
+   filter(restaurant == "Sonic")
 
 ```
 
-# Intro
+# Arbys
 
 This is an R Markdown blog template. This document will be knit to HTML to produce a webpage that will be hosted publicly via GitHub.
 
@@ -33,7 +69,7 @@ This is an R Markdown blog template. This document will be knit to HTML to produ
 3. Commit and push changes when you are ready. The website may take a couple minutes to update automatically after the push, but you may need to clear your browser's cache or view the page in a private/incognito window to see the changes more quickly. 
 
 
-# Content
+# Burger King
 
 You can include text, `code`, and output as usual. Remember to take full advantage of Markdown and follow our [Style Guide](https://acstat231-f22.github.io/home/style-guide.html#Text_narration).
 
@@ -167,7 +203,7 @@ For typesetting equations appropriately, check out the [AMS-LaTeX quick referenc
 
 
 
-# Formatting
+# Chick-Fil-A
 
 ## Tabbed subsections {.tabset}
 
@@ -233,43 +269,170 @@ mtcars %>%
 
 
 
-# Customizing your blog design
+# Dairy Queen
+
+## Calories vs Protein
+
+```{r}
+#Selecting our two variables
+dq_clusters_data <- dq_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+dq_clusers_5 <- dq_clusters_data %>% 
+  kmeans(centers = 5, nstart = 20)
+
+dq_clusers_c5 <- augment(dq_clusers_5, dq_nutrition)
+
+ggplot(dq_clusers_c5, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = dq_clusers_c5, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Dairy Queen Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1500)) +
+      ylim(c(0,60))
+
+#Get Important Data Points and What items are in which cluster
+dq_summaries <- tidy(dq_clusers_5)
+dq_summaries
+
+dq_clusers_5$centers
+
+cluster_list <- split(dq_nutrition$item, dq_clusers_5$cluster)
+cluster_list
+```
 
 
-As a *final* detail **only** if you have time, you can explore options for customizing the style of your blog. By default, we are using the `readthedown` theme from the [**rmdformats** package](https://github.com/juba/rmdformats) (see Line 6 of this file if you want to switch out themes).
+
+# Mcdonalds
+
+```{r}
+#Selecting Variables
+mcd_clusters_data <- mcd_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
 
 
-## Theme
-You can use the [**rmdformats** package](https://github.com/juba/rmdformats) to play around with some pre-built themes. There are, I'm sure, many many many more similar packages with built in themes, or you can look into how to include a CSS code chunk to customize aspects of a theme.  
+# set the seed for reproducibility
+set.seed(23)
 
-Using the **rmdformats** package, you can change the theme itself (Line 6): 
+# Perform k-means clustering with k = 3
+mcd_clusers_4 <- mcd_clusters_data %>% 
+  kmeans(centers = 4, nstart = 20)
 
-* `rmdformats::readthedown`
-* `rmdformats::downcute` 
-  * For `downcute` only, you can add a new indented line below Line 6 with the code `downcute_theme: "chaos"` for the `downcute chaos` theme
-* `rmdformats::robobook` 
-* `rmdformats::material`
+mcd_clusers_c4 <- augment(mcd_clusers_4, mcd_nutrition)
 
-You can explore additional YAML options by looking at the [**rmdformats** package](https://github.com/juba/rmdformats) page or running, for example, `?rmdformats::readthedown()` to see the help documentation for a particular theme from the package. 
+ggplot(mcd_clusers_c4, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = mcd_clusers_c4, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "McDonalds Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,4000)) +
+      ylim(c(0,200))
 
-## Synax highlighting
+#Get Important Data Points and What items are in which cluster
+mcd_summaries <- tidy(mcd_clusers_4)
+mcd_summaries
 
-You can also change the code chunk syntax highlighting option (Line 7, `highlight`): 
+mcd_clusers_4$centers
 
-* `"default"`
-* `"tango"`
-* `"pygments"`
-* `"kate"`
-* `"monochrome"`
-* `"espresso"`
-* `"zenburn"`
-* `"haddock"`
-* `"textmate"` 
-* `NULL` for no syntax highlighting (not recommended)
+cluster_list <- split(mcd_nutrition$item, mcd_clusers_4$cluster)
+cluster_list
 
-## Font size, type, and other customization
 
-Further customization requires adding a CSS style file or code chunk or incorporating other development options. Customization beyond the **rmdformats** package should be your lowest and final priority for the project. Ensure your content is fully prepared first.
+```
+
+
+# Sonic
+
+```{r}
+#Selecting Variables
+sonic_clusters_data <- sonic_nutrition %>% 
+  select(calories, protein)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+sonic_clusers_3 <- sonic_clusters_data %>% 
+  kmeans(centers = 3, nstart = 20)
+
+sonic_clusers_c3 <- augment(sonic_clusers_3, sonic_nutrition)
+
+ggplot(sonic_clusers_c3, aes(x = calories, y = protein)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = sonic_clusers_c3, aes(label = "", color = ""),
+             size = 0.1,
+             label.r = unit(0.05, "lines"),
+             label.size = 0.5,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Sonic Menu Items Grouped Based on Calories and Protein",
+       x = "Calories",
+       y = "Protein",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,2500)) +
+      ylim(c(0,90))
+
+#Get Important Data Points and What items are in which cluster
+sonic_summaries <- tidy(sonic_clusers_3)
+sonic_summaries
+
+sonic_clusers_3$centers
+
+cluster_list <- split(sonic_nutrition$item, sonic_clusers_3$cluster)
+cluster_list
+
+```
+
+
+# Subway
+
+
+
+# Taco Bell
+
+
+# Maps
+
+
 
 
 # References
