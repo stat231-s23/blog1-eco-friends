@@ -24,7 +24,7 @@ library(broom)
 library(GGally)
 ```
 
-# Intro
+# Arbys
 
 This is an R Markdown blog template. This document will be knit to HTML to produce a webpage that will be hosted publicly via GitHub.
 
@@ -37,7 +37,7 @@ This is an R Markdown blog template. This document will be knit to HTML to produ
 3. Commit and push changes when you are ready. The website may take a couple minutes to update automatically after the push, but you may need to clear your browser's cache or view the page in a private/incognito window to see the changes more quickly. 
 
 
-# Content
+## Content
 
 You can include text, `code`, and output as usual. Remember to take full advantage of Markdown and follow our [Style Guide](https://acstat231-f22.github.io/home/style-guide.html#Text_narration).
 
@@ -168,7 +168,7 @@ $$\frac{\sigma^2_b}{\sigma^2_b + \sigma^2_e}$$
 For typesetting equations appropriately, check out the [AMS-LaTeX quick reference](https://github.com/manuelemacchia/math-latex/blob/master/amsmath.pdf) or take a look at the *Symbols in math mode* section of this  [cheat sheet](https://users.dickinson.edu/~richesod/latex/latexcheatsheet.pdf)  (or do some extra Googling---there are *many* resources).
 
 
-# Formatting
+# Chick-Fil-A
 
 ## Tabbed subsections {.tabset}
 
@@ -234,7 +234,7 @@ mtcars %>%
 
 
 
-# Customizing your blog design
+# Burger King
 
 
 As a *final* detail **only** if you have time, you can explore options for customizing the style of your blog. By default, we are using the `readthedown` theme from the [**rmdformats** package](https://github.com/juba/rmdformats) (see Line 6 of this file if you want to switch out themes).
@@ -273,6 +273,30 @@ You can also change the code chunk syntax highlighting option (Line 7, `highligh
 Further customization requires adding a CSS style file or code chunk or incorporating other development options. Customization beyond the **rmdformats** package should be your lowest and final priority for the project. Ensure your content is fully prepared first.
 
 
+# Dairy Queen
+
+
+# McDonalds
+
+
+
+
+# Sonic
+
+
+
+# Subway
+
+
+
+# Taco Bell
+
+
+
+
+
+# Map
+
 # References
 
 All data sources, any key R packages, and any other sources used in developing your blog should be cited in full in a list of references at the end of your blog. Your blog post should also link to these sources as they are discussed. You may choose any reference style as long as sources are fully cited (try to be consistent!).
@@ -306,6 +330,8 @@ Shah, Syed A. A. (October 2022), "Starbucks Drinks" (Version 1), *Kaggle*, avail
 
 <!-- R package -->
 Xie Y, Cheng J, Tan X (2022). "DT: A Wrapper of the JavaScript Library 'DataTables'," R package version 0.24, available at <https://CRAN.R-project.org/package=DT>.
+
+
   
 
 
