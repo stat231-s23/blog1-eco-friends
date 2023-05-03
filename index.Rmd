@@ -3,8 +3,10 @@ title: "Health At Fast Food Restaurants"
 author: "Cora, Sophia, Wendy"
 date: "Add a date"
 output:
-  rmdformats::readthedown:
+  rmdformats::readthedown: 
+    css: "custom.css"
     highlight: "kate"
+    eval: "FALSE"
 ---
 
 ```{r setup, include = FALSE}
@@ -23,10 +25,13 @@ library(stringr)
 library(broom)
 library(GGally)
 library(ggrepel)
+library(mapview)
 
 #Loading In our data
 nutritional_data <-  read.csv("data/nutritioninfo.csv")
+restmap <-  read.csv("data/restmap.csv")
 
+#--- McDonald's ---
 #McDonald's Data Set For 2-way clusters
 mcd_nutrition <- nutritional_data %>%
   filter(restaurant == "Mcdonalds")%>%
@@ -36,6 +41,7 @@ mcd_nutrition <- nutritional_data %>%
 mcd_nutrition_data <- nutritional_data %>%
   filter(restaurant == "Mcdonalds")
 
+#--- Dairy Queen ---
 #Dairy Queen Data Set for 2-way clusters
 dq_nutrition <- nutritional_data %>%
   filter(restaurant == "Dairy Queen")%>%
@@ -45,6 +51,7 @@ dq_nutrition <- nutritional_data %>%
 dq_nutrition_data <- nutritional_data %>%
   filter(restaurant == "Dairy Queen")
 
+#--- Sonic ---
 #Sonic Data set
 sonic_nutrition <- nutritional_data %>%
    filter(restaurant == "Sonic")%>%
@@ -54,6 +61,7 @@ sonic_nutrition <- nutritional_data %>%
 sonic_nutrition_data <- nutritional_data %>%
    filter(restaurant == "Sonic")
 
+#--- Arby's ---
 #Arby's Data Set For 2-way clusters
 arb_nutrition <- nutritional_data %>%
   filter(restaurant == "Arbys")%>%
@@ -63,6 +71,7 @@ arb_nutrition <- nutritional_data %>%
 arb_nutrition_data <- nutritional_data %>%
   filter(restaurant == "Arbys")
 
+#--- Burger King ---
 #Burger King Data Set for 2-way clusters
 bk_nutrition <- nutritional_data %>%
   filter(restaurant == "Burger King")%>%
@@ -72,17 +81,35 @@ bk_nutrition <- nutritional_data %>%
 bk_nutrition <- nutritional_data %>%
   filter(restaurant == "Burger King")
 
-#Chick Fila Data set
+#--- Chick Fil-A ---
+#Chick Fil-A Data set
 chf_nutrition <- nutritional_data %>%
    filter(restaurant == "Chick Fil-A")%>%
   select(item, protein, calories)
 
-#Chick Fila Data Set for all variables
+#Chick Fila Data Set for all variable
 chf_nutrition_data <- nutritional_data %>%
    filter(restaurant == "Chick Fil-A")
 
+#--- Subway ---
+subway <- nutritional_data %>%
+  filter(restaurant == "Subway")
 
-# A comment on who did which parts: Instead of labeling each line of code (since there is a lot of code) we each worked on different restaurants and collaborated on ideas and helped eachother our plan.
+# Remove columns containing characters
+subway_nochar <- subway %>%
+  select(-c(item,restaurant))
+
+#--- Taco Bell ---
+# Taco Bell info
+tacobell <- nutritional_data %>%
+  filter(restaurant == "Taco Bell")
+
+# Remove columns containing characters
+tacobell_nochar <- tacobell %>%
+  select(-c(item,restaurant))
+
+
+# A comment on who did which parts: Instead of labeling each line of code (since there is a lot of code) we each worked on different restaurants and collaborated on ideas and helped each other plan.
 #Sophia worked on Arbys, Burger King, and Chick-Fil-A, Cora worked on Dairy queen, McDonald's, and Sonic, and Wendy worked on Subway and Taco Bell as well as the map of fast food locations.
 ```
 
@@ -475,7 +502,7 @@ mcd_full_scaled <- mcd_clusters_data_full %>%
          , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
   drop_na()
 
-#clustering using standarardized variables:
+#clustering using standardized variables:
 set.seed(23)
 
 #clustering
@@ -629,16 +656,155 @@ ggpairs(sonic_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
 
 > A description of what this means:
 
-# Subway
+# Subway - Sugar
+```{r}
+#Selecting Variables
+subway_selected <- subway %>% 
+  select(calories, sugar)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+subway_c <- subway_selected %>% 
+  kmeans(centers = 3, nstart = 20)
+
+subway_c <- augment(subway_c, subway)
+```
 
 
 
-# Taco Bell
+```{r, fig.width = 12, fig.height = 8}
+ggplot(subway_c, aes(x = calories, y = sugar)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = subway_c, aes(label = ""),
+             size = 0.05,
+             label.r = unit(0.05, "lines"),
+             label.size = NA,
+             fill = NA,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Subway Items Grouped By on Calories and Sugar Content",
+       x = "Calories",
+       y = "Sugar",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1200)) +
+      ylim(c(0,40))
+```
+
+```{r}
+# Scaling our variables
+subway_scaled <- subway_nochar %>%
+# Standardize all numeric variables (subtract mean and divide by SD)
+mutate(across(where(is.numeric), ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+select(calories_scaled, total_fat_scaled, protein_scaled, cholesterol_scaled, 
+       sodium_scaled, total_carb_scaled, sugar_scaled) %>%
+drop_na()
+
+# Create k-means
+subway_kmeans_scaled <- subway_scaled %>%
+kmeans(centers = 3, nstart = 20)
+
+# Scale our clusters
+subway_c_scaled <- augment(subway_kmeans_scaled, subway_scaled) %>%
+rename(cluster_scaled = .cluster)
+
+# Make some visualizations!
+ggpairs(subway_c_scaled, aes(color = cluster_scaled),
+columns = c("calories_scaled", "total_fat_scaled", "protein_scaled", "cholesterol_scaled", 
+       "sodium_scaled", "total_carb_scaled", "sugar_scaled"),
+upper = list(continuous = "blank")) +
+theme(text = element_text(size = 8))
+```
 
 
-# Maps
+# Taco Bell - Cholesterol
+
+```{r}
+#Selecting Variables
+tacobell_selected <- tacobell %>% 
+  select(calories, cholesterol)%>%
+  drop_na
+
+# set the seed for reproducibility
+set.seed(23)
+
+# Perform k-means clustering with k = 3
+tacobell_c <- tacobell_selected %>% 
+  kmeans(centers = 3, nstart = 20)
+
+tacobell_c <- augment(tacobell_c, tacobell)
+```
 
 
+
+```{r, fig.width = 12, fig.height = 8}
+ggplot(tacobell_c, aes(x = calories, y = cholesterol)) + 
+  geom_point(aes(color = .cluster)) +
+  geom_text_repel(aes(label = item, color = .cluster), 
+                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Add centroid labels to plot
+  geom_label(data = tacobell_c, aes(label = ""),
+             size = 0.05,
+             label.r = unit(0.05, "lines"),
+             label.size = NA,
+             fill = NA,
+             label.padding = unit(0.05, "lines"),
+             show.legend = FALSE) +
+  labs(title = "Taco Bell Items Grouped By on Calories and Cholesterol",
+       x = "Calories",
+       y = "Cholesterol",
+       color = "Cluster") +
+  theme_classic() +
+  xlim(c(0,1000)) +
+      ylim(c(0,85))
+```
+
+
+```{r, message=FALSE}
+# Scaling our variables
+tacobell_scaled <- tacobell_nochar %>%
+# Standardize all numeric variables (subtract mean and divide by SD)
+mutate(across(where(is.numeric), ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+select(calories_scaled, total_fat_scaled, protein_scaled, cholesterol_scaled, 
+       sodium_scaled, total_carb_scaled, sugar_scaled) %>%
+drop_na()
+
+# Create k-means
+tacobell_kmeans_scaled <- tacobell_scaled %>%
+kmeans(centers = 3, nstart = 20)
+
+# Scale our clusters
+tacobell_c_scaled <- augment(tacobell_kmeans_scaled, tacobell_scaled) %>%
+rename(cluster_scaled = .cluster)
+
+# Make some visualizations!
+ggpairs(tacobell_c_scaled, aes(color = cluster_scaled),
+columns = c("calories_scaled", "total_fat_scaled", "protein_scaled", "cholesterol_scaled", 
+       "sodium_scaled", "total_carb_scaled", "sugar_scaled"),
+upper = list(continuous = "blank")) +
+theme(text = element_text(size = 8))
+```
+
+
+
+# Conclusion
+
+```{r, echo=FALSE}
+# Wendy
+# Generate Map
+mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
+```
+Click a point on the map to learn more about the restaurant located there.
 
 
 # References
