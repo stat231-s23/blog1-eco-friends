@@ -30,7 +30,7 @@ nutritional_data <-  read.csv("data/nutritioninfo.csv")
 #McDonald's Data Set For 2-way clusters
 mcd_nutrition <- nutritional_data %>%
   filter(restaurant == "Mcdonalds")%>%
-  select(item, protein, calories)
+  select(item, total_fat, calories)
 
 #McDonald's Data Set for all variables
 mcd_nutrition_data <- nutritional_data %>%
@@ -39,7 +39,7 @@ mcd_nutrition_data <- nutritional_data %>%
 #Dairy Queen Data Set for 2-way clusters
 dq_nutrition <- nutritional_data %>%
   filter(restaurant == "Dairy Queen")%>%
-  select(item, protein, calories)
+  select(item, total_fat, calories)
 
 #Dairy Queen Data Set for all variables
 dq_nutrition_data <- nutritional_data %>%
@@ -81,7 +81,14 @@ chf_nutrition <- nutritional_data %>%
 chf_nutrition_data <- nutritional_data %>%
    filter(restaurant == "Chick Fil-A")
 
+
+# A comment on who did which parts: Instead of labeling each line of code (since there is a lot of code) we each worked on different restaurants and collaborated on ideas and helped eachother our plan.
+#Sophia worked on Arbys, Burger King, and Chick-Fil-A, Cora worked on Dairy queen, McDonald's, and Sonic, and Wendy worked on Subway and Taco Bell as well as the map of fast food locations.
 ```
+
+
+# Introduction To Our Project
+> A statement on what story our project aims to tell
 
 
 
@@ -256,7 +263,7 @@ cluster_list
 ```{r}
 #Selecting our two variables
 dq_clusters_data <- dq_nutrition %>% 
-  select(calories, protein)%>%
+  select(calories, total_fat)%>%
   drop_na
 
 # set the seed for reproducibility
@@ -268,7 +275,7 @@ dq_clusers_5 <- dq_clusters_data %>%
 
 dq_clusers_c5 <- augment(dq_clusers_5, dq_nutrition)
 
-ggplot(dq_clusers_c5, aes(x = calories, y = protein)) + 
+ggplot(dq_clusers_c5, aes(x = calories, y = total_fat)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -281,9 +288,9 @@ ggplot(dq_clusers_c5, aes(x = calories, y = protein)) +
              label.size = 0.5,
              label.padding = unit(0.05, "lines"),
              show.legend = FALSE) +
-  labs(title = "Dairy Queen Menu Items Grouped Based on Calories and Protein",
+  labs(title = "Dairy Queen Menu Items Grouped Based on Calories and Total Fat",
        x = "Calories",
-       y = "Protein",
+       y = "Total Fat",
        color = "Cluster") +
   theme_classic() +
   xlim(c(0,1500)) +
@@ -294,27 +301,91 @@ ggplot(dq_clusers_c5, aes(x = calories, y = protein)) +
 ### Information About Clusters
 ```{r}
 #Get Important Data Points and What items are in which cluster
-dq_summaries <- tidy(dq_clusers_5)
+dq_summaries <- tidy(dq_clusers_5)%>%
+    rename(Calories = calories, Total_Fat = total_fat, 
+           Size = size, Withiness = withinss)
 
 kable(dq_summaries)
 
-dq_table <- augment(dq_clusers_5, dq_nutrition)%>%
-  pivot_wider(names_from = .cluster, values_from = item)
 
-cluster_list <- split(dq_nutrition$item, dq_clusers_5$cluster)
+cluster_list_dq <- split(dq_nutrition$item, dq_clusers_5$cluster)
 
+# make into dataframe to print nicely with kable
+dq_dat <- matrix(NA
+              , nrow=max(dq_summaries$Size)
+              , ncol=length(dq_summaries$cluster))
 
+for (i in 1:max(dq_clusers_5$cluster)){
+  jmax <- length(cluster_list_dq[[i]])
+  for (j in 1:jmax)
+    dq_dat[j,i] <- cluster_list_dq[[i]][j]
+}
 
+dq_dat %>%
+  kable(col.names = c("Average For Dairy Queen", "On the Richer Side"
+                      , "Most Fatty/Calorie Dense Items", "Lower calorie and Fat Items", "The Few Low Calorie/Fat Items"))
 ```
 
+### Which Menu Items Should I Order?
+
+> Description of my analysis of the graphs
+
+
+## Looking Over All The Varibales:
+
+```{r}
+#This is for dq (we used 5 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+dq_clusters_data_full <- dq_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+dq_full_scaled <- dq_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+dq_kmean_full_scaled <- dq_full_scaled %>% 
+  kmeans(centers = 5, nstart = 20)
+
+#adding the items and restaurants back in
+dq_nutrition_full_scaled_clusters <- augment(dq_kmean_full_scaled, dq_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(dq_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
+
+### What Does This Mean
+
+> Desciption of what this means:
 
 
 # Mcdonalds
 
+## Calories and Total Fat
+
+### Graphing The Clusters
+
 ```{r}
 #Selecting Variables
 mcd_clusters_data <- mcd_nutrition %>% 
-  select(calories, protein)%>%
+  select(calories, total_fat)%>%
   drop_na
 
 
@@ -327,7 +398,7 @@ mcd_clusers_4 <- mcd_clusters_data %>%
 
 mcd_clusers_c4 <- augment(mcd_clusers_4, mcd_nutrition)
 
-ggplot(mcd_clusers_c4, aes(x = calories, y = protein)) + 
+ggplot(mcd_clusers_c4, aes(x = calories, y = total_fat)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -340,28 +411,104 @@ ggplot(mcd_clusers_c4, aes(x = calories, y = protein)) +
              label.size = 0.5,
              label.padding = unit(0.05, "lines"),
              show.legend = FALSE) +
-  labs(title = "McDonalds Menu Items Grouped Based on Calories and Protein",
+  labs(title = "McDonalds Menu Items Grouped Based on Calories and Total Fat",
        x = "Calories",
-       y = "Protein",
+       y = "Total Fat",
        color = "Cluster") +
   theme_classic() +
   xlim(c(0,4000)) +
       ylim(c(0,200))
 
+```
+
+
+### Describing the Clusters
+
+```{r}
+
 #Get Important Data Points and What items are in which cluster
-mcd_summaries <- tidy(mcd_clusers_4)
-mcd_summaries
+mcd_summaries <- tidy(mcd_clusers_4) %>%
+    rename(Calories = calories, Total_Fat = total_fat, 
+           Size = size, Withiness = withinss)
 
-mcd_clusers_4$centers
+kable(mcd_summaries)
 
-cluster_list <- split(mcd_nutrition$item, mcd_clusers_4$cluster)
-cluster_list
 
+cluster_list_mcd <- split(mcd_nutrition$item, mcd_clusers_4$cluster)
+
+# make into dataframe to print nicely with kable
+mcd_dat <- matrix(NA
+              , nrow=max(mcd_summaries$Size)
+              , ncol=length(mcd_summaries$cluster))
+
+for (i in 1:max(mcd_clusers_4$cluster)){
+  jmax <- length(cluster_list_mcd[[i]])
+  for (j in 1:jmax)
+    mcd_dat[j,i] <- cluster_list_mcd[[i]][j]
+}
+
+mcd_dat %>%
+  kable(col.names = c("Average For McDonalds", "The Fattiest and Most Calorie Dense Item on the Menu"
+                      , "Least Fatty/Calorie Dense Items", "High Calories and Fat"))
 
 ```
 
 
+### Which Menu Items Should I Order?
+
+> Description of my analysis of the graphs
+
+
+## Looking Over all The Nutrition Facts:
+
+```{r}
+#This for mcdonalds (we used 4 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+mcd_clusters_data_full <- mcd_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+mcd_full_scaled <- mcd_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+mcd_kmean_full_scaled <- mcd_full_scaled %>% 
+  kmeans(centers = 5, nstart = 20)
+
+#adding the items and restaurants back in
+mcd_nutrition_full_scaled_clusters <- augment(mcd_kmean_full_scaled, mcd_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(mcd_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
+
+### What Does this Mean:
+
+> A description of what this means:
+
+
 # Sonic
+
+## Comparing Calories and Protein
+ 
+### Graphing Our Clusters
 
 ```{r}
 #Selecting Variables
@@ -398,18 +545,89 @@ ggplot(sonic_clusers_c3, aes(x = calories, y = protein)) +
   theme_classic() +
   xlim(c(0,2500)) +
       ylim(c(0,90))
+```
 
+
+### Defining The Clusters
+
+```{r}
 #Get Important Data Points and What items are in which cluster
-sonic_summaries <- tidy(sonic_clusers_3)
-sonic_summaries
+sonic_summaries <- tidy(sonic_clusers_3)%>%
+    rename(Calories = calories, Protein = protein, 
+           Size = size, Withiness = withinss)
 
-sonic_clusers_3$centers
 
-cluster_list <- split(sonic_nutrition$item, sonic_clusers_3$cluster)
-cluster_list
+kable(sonic_summaries)
+
+cluster_list_sonic <- split(sonic_nutrition$item, sonic_clusers_3$cluster)
+
+# make into dataframe to print nicely with kable
+sonic_dat <- matrix(NA
+              , nrow=max(sonic_summaries$Size)
+              , ncol=length(sonic_summaries$cluster))
+
+for (i in 1:max(sonic_clusers_3$cluster)){
+  jmax <- length(cluster_list_sonic[[i]])
+  for (j in 1:jmax)
+    sonic_dat[j,i] <- cluster_list_sonic[[i]][j]
+}
+
+sonic_dat %>%
+  kable(col.names = c("Low Calorie and Protein", "Middle Calories and Protein"
+                      , "Extremely Calory and Protein Rich"))
 
 ```
 
+
+
+### Which Menu Items Should I Order?
+
+> Description of my analysis of the graphs
+
+## Looking over all the variables 
+
+```{r}
+#This for sonic (we used 3 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+sonic_clusters_data_full <- sonic_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+sonic_full_scaled <- sonic_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+sonic_kmean_full_scaled <- sonic_full_scaled %>% 
+  kmeans(centers = 3, nstart = 20)
+
+#adding the items and restaurants back in
+sonic_nutrition_full_scaled_clusters <- augment(sonic_kmean_full_scaled, sonic_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(sonic_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+
+```
+
+### What Does this Mean:
+
+> A description of what this means:
 
 # Subway
 
