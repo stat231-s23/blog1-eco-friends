@@ -355,7 +355,8 @@ dq_dat %>%
 
 ### Which Menu Items Should I Order?
 
-> Description of my analysis of the graphs
+> In my graph and tables above, all 42 menu items offered at Dairy Queen across the country are grouped together into five different clusters based on their total calories and total fat. The first cluster contains 14 menu items, which are listed under “Average for Dairy Queen” This is labeled this way because these menu items have an average of 568.5714 calories per serving, and 30.64 grams of fat, which is right in the middle for these five groups. If you find yourself at a Dairy Queen and want to feel full and don’t mind consuming a bunch of calories and fat, choosing an item from this list would be a good idea. The second cluster is labeled “On the Richer Side” and these menu items contain an average of 812.5 calories and 49 grams of total fat. These four items contain the second-highest average amount of calories and fat for Dairy Queen. So, if you are at Dairy Queen, and want to have a large meal that is very satisfying, these four items may be a good choice. The third cluster also contains four items, which have an average of 1,085 calories, and 67 grams of total fat. This is labeled “Most Fatty/Calorie Dense Items” because these four items are the items with the highest calories and fat that DQ offers. So, if you plan on ordering any of these four items, I would be informed that you are consuming a lot of fat and a lot of calories. The fourth Cluster is labeled “lower calorie and fat food items” because it contains some of the least rich items on the menu. These items have an average of 340.5556 calories and only 17.611 grams of total fat. These 18 items would be a good choice for anyone who is looking to have a lighter meal and still feel satisfied after eating it. The fifth and final Category is labeled “The Few Low Calorie/Fat Items” and contains the two salads that Dairy Queen has to offer. These two salads have an average of 85 calories and only 1 gram of fat. So, if you are on a diet or want a small snack while at Dairy Queen, these two options are perfect for you. 
+
 
 
 ## Looking Over All The Varibales:
@@ -400,7 +401,8 @@ ggpairs(dq_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
 
 ### What Does This Mean
 
-> Desciption of what this means:
+> Above one can look at the relationship between each of the seven variables that are most important for looking at the health of the food that you are eating. These components are calories, total fat, protein, cholesterol, sodium, total carbs, and sugar. The clusters are the same as above, with purple being the lowest calorie items, blue being the second least, army green being in the middle, red second most, and the brighter green the most. While this graph is a lot to look at, it allows you to focus on two of the variables that matter most to you. For example, if you are most interested in sugar, you can see that almost all of the food items contain the same amount of sugar, so this variable may not be that interesting because it does not change much depending on which food item. Looking at this graph is why total fat and calories are highlighted in the graph above. It is clear that these two have a very high positive linear correlation and the clusters are clearly separated from one another.
+
 
 
 # Mcdonalds
