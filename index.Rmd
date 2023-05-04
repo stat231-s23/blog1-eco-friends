@@ -874,24 +874,12 @@ mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE
 
 # References
 
-- Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G,
-  Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K,
-  Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo
-  K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of Open Source
-  Software_, *4*(43), 1686. doi:10.21105/joss.01686
-  <https://doi.org/10.21105/joss.01686>
+- Appelhans T, Detsch F, Reudenbach C, Woellauer S (2022). _mapview: Interactive
+  Viewing of Spatial Data in R_. R package version 2.11.0,
+  <https://CRAN.R-project.org/package=mapview>
   
--  Zhu H (2021). _kableExtra: Construct Complex Table with 'kable' and Pipe
-  Syntax_. R package version 1.3.4,
-  <https://CRAN.R-project.org/package=kableExtra>
+- Pedersen, Ulrik Thyge. “Fastfood Nutrition.” Kaggle, 21 Mar. 2023, https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition. 
 
-- Wickham H (2022). _rvest: Easily Harvest (Scrape) Web Pages_. R package
-  version 1.0.3, <https://CRAN.R-project.org/package=rvest>
-
-- Wickham H (2022). _stringr: Simple, Consistent Wrappers for Common String
-  Operations_. R package version 1.5.0,
-  <https://CRAN.R-project.org/package=stringr>
-  
 - Robinson D, Hayes A, Couch S (2023). _broom: Convert Statistical Objects into
   Tidy Tibbles_. R package version 1.0.3,
   <https://CRAN.R-project.org/package=broom>
@@ -900,10 +888,26 @@ mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE
   Crowley J (2021). _GGally: Extension to 'ggplot2'_. R package version 2.1.2,
   <https://CRAN.R-project.org/package=GGally>
   
+- Shahh, Khushi. “Fast Food Restaurants across US.” Kaggle, 31 Aug. 2021, https://www.kaggle.com/datasets/khushishahh/fast-food-restaurants-across-us. 
+
 -  Slowikowski K (2023). _ggrepel: Automatically Position Non-Overlapping Text
   Labels with 'ggplot2'_. R package version 0.9.3,
   <https://CRAN.R-project.org/package=ggrepel>
+  
+- Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G,
+  Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K,
+  Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo
+  K, Yutani H (2019). “Welcome to the tidyverse.” _Journal of Open Source
+  Software_, *4*(43), 1686. doi:10.21105/joss.01686
+  <https://doi.org/10.21105/joss.01686>
 
-- Appelhans T, Detsch F, Reudenbach C, Woellauer S (2022). _mapview: Interactive
-  Viewing of Spatial Data in R_. R package version 2.11.0,
-  <https://CRAN.R-project.org/package=mapview>
+- Wickham H (2022). _rvest: Easily Harvest (Scrape) Web Pages_. R package
+  version 1.0.3, <https://CRAN.R-project.org/package=rvest>
+
+- Wickham H (2022). _stringr: Simple, Consistent Wrappers for Common String
+  Operations_. R package version 1.5.0,
+  <https://CRAN.R-project.org/package=stringr>
+  
+  -  Zhu H (2021). _kableExtra: Construct Complex Table with 'kable' and Pipe
+  Syntax_. R package version 1.3.4,
+  <https://CRAN.R-project.org/package=kableExtra>
