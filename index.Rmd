@@ -121,13 +121,14 @@ tacobell_nochar <- tacobell %>%
 Driving down any American city or town, there are fast food restaurants lining the streets. Faced with time constraints from work, childcare, and commuting, many people often turn to convenience foods to save time. Although these restaurants offer a solution to lost time in terms of food preparation and clean up, they simultaneously propose a new problem: a poor diet. According to a 2015 review, fast food is often high in sugar, salt, saturated or trans fats, and many processed preservatives, while also lacking beneficial nutrients.  The goal of this blog is to answer the question: “Which fast food items from various restaurants best fit health-conscious dietary needs?” By categorizing all of the menu items at the most popular fast-food restaurants, we aim to provide readers with information that might influence their next order. Should you find yourself at Arbys, Burger King, Chick-Fil-A, Dairy Queen, McDonald’s, Sonic, Subway, or Taco Bell, we hope that you’ll be equipped with exactly what you need to know in order to stick to your health goals.
 
 For reference, here are the average daily requirements for various types of nutrition:
-  - Calories: 2000-2500 kcal/day for men, and 1600-2000 kcal/day for women.
-  - Protein: 0.8-1.0 g/kg of body weight/day.
-  - Carbohydrates: 45-65% of total daily calories, or at least 130 g/day.
-  - Fat: 20-35% of total daily calories, or at least 20-35 g/day.
-  - Cholesterol: Less than 300 milligrams per day for most adults, and less than 200 milligrams per day for individuals with heart disease or high blood cholesterol levels.
-  - Sodium: Less than 2,300 milligrams per day for most adults, and less than 1,500 milligrams per day for individuals with high blood pressure, kidney disease, or other health conditions.
-  - Sugar: the American Heart Association recommends no more than 25 grams per day for women and 38 grams per day for men.
+
+* **Calories:** 2000-2500 kcal/day for men, and 1600-2000 kcal/day for women.
+* **Protein:** 0.8-1.0 g/kg of body weight/day.
+* **Carbohydrates:** 45-65% of total daily calories, or at least 130 g/day.
+* **Fat:** 20-35% of total daily calories, or at least 20-35 g/day.
+* **Cholesterol:** Less than 300 milligrams per day for most adults, and less than 200 milligrams per day for individuals with heart disease or high blood cholesterol levels.
+* **Sodium:** Less than 2,300 milligrams per day for most adults, and less than 1,500 milligrams per day for individuals with high blood pressure, kidney disease, or other health conditions.
+* **Sugar:** the American Heart Association recommends no more than 25 grams per day for women and 38 grams per day for men.
 
 Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. It can be found at this link: (https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition), where you can view other variables that were not a part of our analysis if you are interested in exploring further.
 
@@ -790,7 +791,7 @@ upper = list(continuous = "blank")) +
 theme(text = element_text(size = 8))
 ```
 
-# Taco Bell - Cholesterol
+# Taco Bell
 
 ```{r}
 #Selecting Variables
