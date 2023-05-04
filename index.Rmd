@@ -129,7 +129,7 @@ For reference, here are the average daily requirements for various types of nutr
   - Sodium: Less than 2,300 milligrams per day for most adults, and less than 1,500 milligrams per day for individuals with high blood pressure, kidney disease, or other health conditions.
   - Sugar: the American Heart Association recommends no more than 25 grams per day for women and 38 grams per day for men.
 
-Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. It can be found HERE, where you can view other variables that were not a part of our analysis if you are interested in exploring further.
+Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. It can be found at this link: (https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition), where you can view other variables that were not a part of our analysis if you are interested in exploring further.
 
 A possible limitation of our data analysis is the fact that the nutritional information or availability of certain menu items could differ depending on the location. Our data does not account for this variability. Another limitation is that we focus on two kinds of nutrients at a  time.  It is difficult to get a total picture of health when you are only given enough information to compare two health components. To remedy this, we provide a matrix of plots with comparisons for all our variables at the end of each restaurant’s analysis.
 
