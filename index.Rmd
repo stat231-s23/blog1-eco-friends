@@ -150,19 +150,13 @@ arb_clusters_4 <- arb_clusters_data %>%
 
 arb_clusters_c4 <- augment(arb_clusters_4, arb_nutrition)
 
-ggplot(arb_clusters_c4, aes(x = calories, y = protein)) + 
-  geom_point(aes(color = .cluster)) +
-  geom_text_repel(aes(label = item, color = .cluster), 
+ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster)) + 
+  geom_point() +
+  geom_text_repel(aes(label = item), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = arb_clusters_c4, aes(label = "", color = ""),
-             size = 0.1,
-             label.r = unit(0.05, "lines"),
-             label.size = 0.5,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
+
   labs(title = "Arby's Menu Items Grouped Based on Calories and Protein",
        x = "Calories",
        y = "Protein",
@@ -192,10 +186,54 @@ for (i in 1:max(arb_clusters_4$cluster)){
 
 arb_dat %>%
   kable(col.names = c("Group 1", "Bring on the calories and protein!"
-                      , "Group 3", "If you're on a diet . . ."))
+                      , "Group 3", "If you're on a diet . . .")) %>%
+column_spec(1, color = "#F8766D") %>%
+column_spec(2, color = "#00BA38") %>%
+column_spec(3, color = "#619CFF") %>%
+column_spec(4, color = "#C77CFF")
+
 ```
 
 
+## Looking Over All The Variables
+
+```{r}
+#This is for dq (we used 4 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+arb_clusters_data_full <- arb_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+arb_full_scaled <- arb_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+arb_kmean_full_scaled <- arb_full_scaled %>% 
+  kmeans(centers = 4, nstart = 20)
+
+#adding the items and restaurants back in
+arb_nutrition_full_scaled_clusters <- augment(arb_kmean_full_scaled, arb_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(arb_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
 
 
 # Burger King
@@ -248,6 +286,47 @@ cluster_list <- split(bk_nutrition$item, bk_clusters_3$cluster)
 cluster_list
 ```
 
+## Looking Over All The Variables
+
+```{r}
+#This is for dq (we used 3 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+bk_clusters_data_full <- bk_nutrition %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+bk_full_scaled <- bk_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+bk_kmean_full_scaled <- bk_full_scaled %>% 
+  kmeans(centers = 3, nstart = 20)
+
+#adding the items and restaurants back in
+bk_nutrition_full_scaled_clusters <- augment(bk_kmean_full_scaled, bk_nutrition) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(bk_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
+
+
 # Chick-Fil-A
 
 ```{r}
@@ -295,6 +374,46 @@ cluster_list <- split(chf_nutrition$item, chf_clusters_3$cluster)
 cluster_list
 ```
 
+
+## Looking Over All The Variables
+
+```{r}
+#This is for dq (we used 3 clusters before, so we are going to use that again for consistency)
+#getting rid of non-numeric variables
+chf_clusters_data_full <- chf_nutrition_data %>% 
+  select(calories, total_fat, protein, cholesterol, sodium, total_carb, sugar)%>%
+  drop_na
+
+chf_full_scaled <- chf_clusters_data_full %>%
+  # Standardize all numeric variables (subtract mean and divide by SD)
+  mutate(across(where(is.numeric),  ~scale(.)[,1], .names = "{.col}_scaled")) %>%
+  select(calories_scaled, total_fat_scaled, protein_scaled
+         , cholesterol_scaled, sodium_scaled, total_carb_scaled, sugar_scaled) %>% 
+  drop_na()
+
+#clustering using standarardized variables:
+set.seed(23)
+
+#clustering
+chf_kmean_full_scaled <- chf_full_scaled %>% 
+  kmeans(centers = 3, nstart = 20)
+
+#adding the items and restaurants back in
+chf_nutrition_full_scaled_clusters <- augment(chf_kmean_full_scaled, chf_nutrition_data) %>% 
+  rename(cluster_scaled = .cluster)
+
+#creating the plot
+ggpairs(chf_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
+        columns = c("calories", 
+                    "total_fat",
+                    "protein", 
+                    "cholesterol",
+                    "sodium",
+                    "total_carb",
+                    "sugar"),
+        upper = list(continuous = "blank")) +
+  theme(text = element_text(size = 8))
+```
 
 # Dairy Queen
 
