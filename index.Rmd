@@ -255,19 +255,12 @@ drop_na
   
 bk_clusters_c3 <- augment(bk_clusters_3, bk_nutrition)
 
-ggplot(bk_clusters_c3, aes(x = calories, y = protein)) + 
-  geom_point(aes(color = .cluster)) +
-  geom_text_repel(aes(label = item, color = .cluster), 
+ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster)) + 
+  geom_point() +
+  geom_text_repel(aes(label = item), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = bk_clusters_c3, aes(label = "", color = ""),
-             size = 0.1,
-             label.r = unit(0.05, "lines"),
-             label.size = 0.5,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "Burger King Menu Items Grouped Based on Calories and Protein",
        x = "Calories",
        y = "Protein",
@@ -343,19 +336,12 @@ chf_clusters_3 <- chf_clusters_data %>%
 
 chf_clusters_c3 <- augment(chf_clusters_3, chf_nutrition)
 
-ggplot(chf_clusters_c3, aes(x = calories, y = protein)) + 
-  geom_point(aes(color = .cluster)) +
+ggplot(chf_clusters_c3, aes(x = calories, y = protein, color = .cluster)) + 
+  geom_point() +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = chf_clusters_c3, aes(label = "", color = ""),
-             size = 0.1,
-             label.r = unit(0.05, "lines"),
-             label.size = 0.5,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "Chick-fil-A Menu Items Grouped Based on Calories and Protein",
        x = "Calories",
        y = "Protein",
