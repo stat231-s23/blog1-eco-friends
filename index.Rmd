@@ -115,9 +115,23 @@ tacobell_nochar <- tacobell %>%
 
 
 # Introduction To Our Project
-> A statement on what story our project aims to tell
 
+**Trigger Warning: This blog post discusses eating, food, and nutrition**
 
+Driving down any American city or town, there are fast food restaurants lining the streets. Faced with time constraints from work, childcare, and commuting, many people often turn to convenience foods to save time. Although these restaurants offer a solution to lost time in terms of food preparation and clean up, they simultaneously propose a new problem: a poor diet. According to a 2015 review, fast food is often high in sugar, salt, saturated or trans fats, and many processed preservatives, while also lacking beneficial nutrients.  The goal of this blog is to answer the question: “Which fast food items from various restaurants best fit health-conscious dietary needs?” By categorizing all of the menu items at the most popular fast-food restaurants, we aim to provide readers with information that might influence their next order. Should you find yourself at Arbys, Burger King, Chick-Fil-A, Dairy Queen, McDonald’s, Sonic, Subway, or Taco Bell, we hope that you’ll be equipped with exactly what you need to know in order to stick to your health goals.
+
+For reference, here are the average daily requirements for various types of nutrition:
+  - Calories: 2000-2500 kcal/day for men, and 1600-2000 kcal/day for women.
+  - Protein: 0.8-1.0 g/kg of body weight/day.
+  - Carbohydrates: 45-65% of total daily calories, or at least 130 g/day.
+  - Fat: 20-35% of total daily calories, or at least 20-35 g/day.
+  - Cholesterol: Less than 300 milligrams per day for most adults, and less than 200 milligrams per day for individuals with heart disease or high blood cholesterol levels.
+  - Sodium: Less than 2,300 milligrams per day for most adults, and less than 1,500 milligrams per day for individuals with high blood pressure, kidney disease, or other health conditions.
+  - Sugar: the American Heart Association recommends no more than 25 grams per day for women and 38 grams per day for men.
+
+Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. It can be found HERE, where you can view other variables that were not a part of our analysis if you are interested in exploring further.
+
+A possible limitation of our data analysis is the fact that the nutritional information or availability of certain menu items could differ depending on the location. Our data does not account for this variability. Another limitation is that we focus on two kinds of nutrients at a  time.  It is difficult to get a total picture of health when you are only given enough information to compare two health components. To remedy this, we provide a matrix of plots with comparisons for all our variables at the end of each restaurant’s analysis.
 
 # Arbys
 
@@ -659,7 +673,13 @@ ggpairs(sonic_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
 > Even though the above protein and calories are highlighted as descriptors of which menu items one should order, there is a lot more to consider when thinking about your diet. The graph above showcases the distribution of seven different health indicators. Looking at the distributions of the different clusters is very interesting because you can see that most of the clusters show one that is low, one medium, and one high cluster, except for sodium, and sugar. All the menu items appear to be around the same for sodium, and for sugar, there appears to be One group of items that are lower in sugar and two that are about medium in sugar. It is also interesting to note the relationships between each of the variables. It seems that almost every variable is related to one another in a positive way, with sugar and sodium being the least heavily correlated. Calories and protein are highlighted to be compared, because the distribution of protein is interesting with the first cluster being fairly spread out and in protein, then a giant spike of a lot of items being medium in protein, and then again, a fairly spread out distribution of items on the higher end. If you are interested in a more well-rounded description of the menu items at Sonic, this is a great place to start.
 
 
-# Subway - Sugar
+# Subway
+## Looking at Calories and Sugar
+
+> In 2020, Ireland’s Supreme Court announced its ruling in a years-long legal battle: “Subway bread is not bread." Under a 1972 law, Ireland deemed that the sugar content of bread cannot exceed 2% of the weight of flour in the dough. Subway bread was found to have a sugar content of about 10%.
+
+> Why is this a problem? In the United States, the average adult consumes an estimated 17 teaspoons of sugar each day. That accounts for 14% of total calorie intake in adults following a 2,000-calorie diet. Consuming too much sugar can increases the risk of obesity, diabetes, and heart disease.
+ 
 ```{r}
 #Selecting Variables
 subway_selected <- subway %>% 
@@ -670,13 +690,13 @@ subway_selected <- subway %>%
 set.seed(23)
 
 # Perform k-means clustering with k = 3
-subway_c <- subway_selected %>% 
+subway_ck <- subway_selected %>% 
   kmeans(centers = 3, nstart = 20)
 
-subway_c <- augment(subway_c, subway)
+subway_c <- augment(subway_ck, subway)
 ```
 
-
+### Graphing Our Clusters:
 
 ```{r, fig.width = 12, fig.height = 8}
 ggplot(subway_c, aes(x = calories, y = sugar)) + 
@@ -702,6 +722,49 @@ ggplot(subway_c, aes(x = calories, y = sugar)) +
       ylim(c(0,40))
 ```
 
+### Defining The Clusters:
+
+```{r}
+#Get Important Data Points and What items are in which cluster
+subway_summaries <- tidy(subway_ck)%>%
+    rename(Calories = calories, Sugar = sugar, 
+           Size = size, Withiness = withinss)
+
+
+kable(subway_summaries)
+
+clusterlist_subway <- split(subway$item, subway_ck$cluster)
+
+# make into dataframe to print nicely with kable
+subway_df <- matrix(NA
+              , nrow=max(subway_summaries$Size)
+              , ncol=length(subway_summaries$cluster))
+
+for (i in 1:max(subway_ck$cluster)){
+  jmax <- length(clusterlist_subway[[i]])
+  for (j in 1:jmax)
+    subway_df[j,i] <- clusterlist_subway[[i]][j]
+}
+
+subway_df %>%
+  kable(col.names = c("Mild Calorie, Mild Sugar Content", "High Calorie, High Sugar Content"
+                      , "Low Calorie, Low Sugar Content"))
+
+```
+
+```{r}
+subway_ck$centers
+```
+
+
+### Which Menu Items Should I Order?:
+
+> Although an order at Subway can be highly customized, the visualizations above take a look at 96 items on their menu. We can split them into three categories based on their calories and sugar content. The first group, "Mild Calorie, Mild Sugar Content", is red on the scatterplot. It's worth noting that, although these options might be good for someone aiming for a calorie-deficit, there is a lot of variabiltiy in the sugar content - so one should choose wisely. This cluster has an average calorie count of 538 and an average of 10 grams of sugar. 
+
+> The second cluster, labeled “High Calorie, High Sugar Content” are items at Subway that you might want to avoid for a more health-conscious diet. These are colored green on our scatterplot. Most notably, the `Footlong Sweet Onion Chicken Teriyaki`is the item with the highest sugar-level. The sugar content in this single item is almost double the suggested daily sugar intake amount. This cluster has an average of 883 calories and 15 grams of sugar on average. 
+
+> Finally, the last cluster is blue on the graph and is titled “Low Calorie, Low Sugar Content". These menu items are perfect for someone who is looking to consume a meal that is light in calories, while staying below the suggested daily sugar intake. The variation in this group is key: there are salads, meat-based sandwiches, and veggie sandwiches. This cluster contains items with an average of 251 calories, and 7 grams of sugar.
+
 ```{r}
 # Scaling our variables
 subway_scaled <- subway_nochar %>%
@@ -726,7 +789,6 @@ columns = c("calories_scaled", "total_fat_scaled", "protein_scaled", "cholestero
 upper = list(continuous = "blank")) +
 theme(text = element_text(size = 8))
 ```
-
 
 # Taco Bell - Cholesterol
 
@@ -803,11 +865,10 @@ theme(text = element_text(size = 8))
 # Conclusion
 
 ```{r, echo=FALSE}
-# Wendy
 # Generate Map
 mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
 ```
-Click a point on the map to learn more about the restaurant located there.
+*Click a point on the map to learn more about the restaurant located there.*
 
 
 # References
