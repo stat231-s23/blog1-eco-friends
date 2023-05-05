@@ -422,25 +422,18 @@ dq_clusers_5 <- dq_clusters_data %>%
 
 dq_clusers_c5 <- augment(dq_clusers_5, dq_nutrition)
 
-ggplot(dq_clusers_c5, aes(x = calories, y = total_fat)) + 
+ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
-  scale_x_continuous(breaks = scales::breaks_width(200)) +
+  scale_x_continuous(breaks = scales::breaks_width(50)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = dq_clusers_c5, aes(label = "", color = ""),
-             size = 0.1,
-             label.r = unit(0.05, "lines"),
-             label.size = 0.5,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "Dairy Queen Menu Items Grouped Based on Calories and Total Fat",
        x = "Calories",
        y = "Total Fat",
        color = "Cluster") +
   theme_classic() +
-  xlim(c(0,1500)) +
+  xlim(c(0,1100)) +
       ylim(c(0,60))
 ```
 
@@ -470,7 +463,12 @@ for (i in 1:max(dq_clusers_5$cluster)){
 
 dq_dat %>%
   kable(col.names = c("Average For Dairy Queen", "On the Richer Side"
-                      , "Most Fatty/Calorie Dense Items", "Lower Calorie and Fat Items", "The Few Low Calorie/Fat Items"))
+                      , "Most Fatty/Calorie Dense Items", "Lower Calorie and Fat Items", "The Few Low Calorie/Fat Items"))%>%
+column_spec(1, color = "#f54242") %>%
+column_spec(2, color = "#528c1c") %>%
+column_spec(3, color = "#2abd09")%>%
+column_spec(4, color = "#42A7F5")%>%
+column_spec(5, color = "#C77CFF")
 ```
 
 ### Which Menu Items Should I Order?:
@@ -553,20 +551,13 @@ ggplot(mcd_clusers_c4, aes(x = calories, y = total_fat)) +
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = mcd_clusers_c4, aes(label = "", color = ""),
-             size = 0.1,
-             label.r = unit(0.05, "lines"),
-             label.size = 0.5,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "McDonalds Menu Items Grouped Based on Calories and Total Fat",
        x = "Calories",
        y = "Total Fat",
        color = "Cluster") +
   theme_classic() +
-  xlim(c(0,4000)) +
-      ylim(c(0,200))
+  xlim(c(0,2500)) +
+      ylim(c(0,160))
 
 ```
 
@@ -598,7 +589,11 @@ for (i in 1:max(mcd_clusers_4$cluster)){
 
 mcd_dat %>%
   kable(col.names = c("Average For McDonalds", "The Fattiest and Most Calorie Dense Item on the Menu"
-                      , "Least Fatty/Calorie Dense Items", "High Calories and Fat"))
+                      , "Least Fatty/Calorie Dense Items", "High Calories and Fat"))%>%
+  column_spec(1, color = "#f54242") %>%
+column_spec(2, color = "#528c1c") %>%
+column_spec(3, color = "#09bda8") %>%
+column_spec(4, color = "#D742F5")
 
 ```
 
@@ -680,20 +675,13 @@ ggplot(sonic_clusers_c3, aes(x = calories, y = protein)) +
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = sonic_clusers_c3, aes(label = "", color = ""),
-             size = 0.1,
-             label.r = unit(0.05, "lines"),
-             label.size = 0.5,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "Sonic Menu Items Grouped Based on Calories and Protein",
        x = "Calories",
        y = "Protein",
        color = "Cluster") +
   theme_classic() +
-  xlim(c(0,2500)) +
-      ylim(c(0,90))
+  xlim(c(0,1500)) +
+      ylim(c(0,70))
 ```
 
 
@@ -723,7 +711,10 @@ for (i in 1:max(sonic_clusers_3$cluster)){
 
 sonic_dat %>%
   kable(col.names = c("Low Calorie and Protein", "Middle Calories and Protein"
-                      , "Extremely Calorie and Protein Rich"))
+                      , "Extremely Calorie and Protein Rich"))%>%
+  column_spec(1, color = "#f54242") %>%
+column_spec(2, color = "#2abd09") %>%
+column_spec(3, color = "#42A7F5") 
 
 ```
 
