@@ -433,8 +433,8 @@ ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster)) +
        y = "Total Fat",
        color = "Cluster") +
   theme_classic() +
-  xlim(c(0,1100)) +
-      ylim(c(0,60))
+  xlim(c(0,1280)) +
+      ylim(c(0,80))
 ```
 
 
