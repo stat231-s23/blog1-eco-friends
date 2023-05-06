@@ -85,7 +85,7 @@ bk_nutrition <- nutritional_data %>%
 #Chick Fil-A Data set
 chf_nutrition <- nutritional_data %>%
    filter(restaurant == "Chick Fil-A")%>%
-  select(item, protein, calories)
+  select(item, sodium, calories)
 
 #Chick Fila Data Set for all variable
 chf_nutrition_data <- nutritional_data %>%
@@ -188,8 +188,8 @@ for (i in 1:max(arb_clusters_4$cluster)){
 }
 
 arb_dat %>%
-  kable(col.names = c("Group 1", "Bring on the calories and protein!"
-                      , "Group 3", "If you're on a diet . . .")) %>%
+  kable(col.names = c("Lower Average for Calories/Protien", "Bring on the Calories and Protein!"
+                      , "Higher Average for Calories/Protien", "If you're on a diet . . .")) %>%
 column_spec(1, color = "#F8766D") %>%
 column_spec(2, color = "#528c1c") %>%
 column_spec(3, color = "#27adad") %>%
@@ -294,8 +294,8 @@ for (i in 1:max(bk_clusters_3$cluster)){
 }
 
 bk_dat %>%
-  kable(col.names = c("Average For Burger King", "On the Richer Side"
-                      , "Most Fatty/Calorie Dense Items"))%>%
+  kable(col.names = c("Average For Burger King", "Least Protien/Calorie Dense Items"
+                      , "More Rich in Calories/Protien"))%>%
 column_spec(1, color = "#f54242") %>%
 column_spec(2, color = "#2abd09")%>%
 column_spec(3, color = "#42A7F5")
@@ -346,7 +346,7 @@ ggpairs(bk_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
 
 ```{r}
 chf_clusters_data <- chf_nutrition %>% 
-  select(calories, protein)%>%
+  select(calories, sodium)%>%
   drop_na
 
 # set the seed for reproducibility
@@ -358,19 +358,19 @@ chf_clusters_3 <- chf_clusters_data %>%
 
 chf_clusters_c3 <- augment(chf_clusters_3, chf_nutrition)
 
-ggplot(chf_clusters_c3, aes(x = calories, y = protein, color = .cluster)) + 
+ggplot(chf_clusters_c3, aes(x = calories, y = sodium, color = .cluster)) + 
   geom_point() +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  labs(title = "Chick-fil-A Menu Items Grouped Based on Calories and Protein",
+  labs(title = "Chick-fil-A Menu Items Grouped Based on Calories and Sodium",
        x = "Calories",
-       y = "Protein",
+       y = "Sodium",
        color = "Cluster") +
   theme_classic() +
-  xlim(c(0,900)) +
-      ylim(c(0,60))
+  xlim(c(0,1200)) +
+      ylim(c(0,4500))
 
 ```
 
@@ -395,8 +395,8 @@ for (i in 1:max(chf_clusters_3$cluster)){
 }
 
 chf_dat %>%
-  kable(col.names = c("Average For Chick-Fil-A", "On the Richer Side"
-                      , "Most Fatty/Calorie Dense Items"))%>%
+  kable(col.names = c("Very Salty", "On the lower side for Calories/Sodium"
+                      , "Average For Chick-Fil-A"))%>%
 column_spec(1, color = "#f54242") %>%
 column_spec(2, color = "#2abd09")%>%
 column_spec(3, color = "#42A7F5")
