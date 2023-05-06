@@ -158,8 +158,8 @@ ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
 
   labs(title = "Arby's Menu Items Grouped Based on Calories and Protein",
-       x = "Calories",
-       y = "Protein",
+       x = "Calories (kilocalories)",
+       y = "Protein (grams)",
        color = "Cluster") +
   theme_classic() +
   xlim(c(0,1200)) +
@@ -196,6 +196,11 @@ column_spec(3, color = "#27adad") %>%
 column_spec(4, color = "#C77CFF")
 
 ```
+
+### Which Menu Items Should I Order?:
+
+> Arby's is known for it's food items with meat in them. The Arby's commercial solgan saying, "We have the meats" is catering to an audience of people looking for high protien items. The graph and table above show the menu items offered at Arby's locations all around the US grouped into 4 different clusters. Each cluster represents a grouping of menu items with different levels of protien and calories. Group 1 is labeled as Lower Average for Calories/Protien because the food items in that cluster contain an average of 483 calories and 26 grams of protein. Group 2 is labeled as Bring on the Calories and Protein! because it has the highest levels of calories and protein for all the groups with an average of 950 calories and 46 grams of protien. Choosing a menu item from this category would be a good idea if you are looking for a big filling meal that is high in protien. Higher Average for Calories/Protien is the name of group 3 because those items have an average of 678 calories and 37 grams of proteins. The final group 4 is labled If you're on a diet... because these menu items are catering to people who want to consume a lighter meal that is not heavy in calories or protien. The averages from this group are 258 calories and 15 grams of protein. 
+
 
 ## Looking Over All The Variables
 
@@ -264,8 +269,8 @@ ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster)) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Burger King Menu Items Grouped Based on Calories and Protein",
-       x = "Calories",
-       y = "Protein",
+       x = "Calories (kilocalories)",
+       y = "Protein (grams)",
        color = "Cluster") +
   theme_classic() +
   xlim(c(0,1500)) +
@@ -300,6 +305,11 @@ column_spec(1, color = "#f54242") %>%
 column_spec(2, color = "#2abd09")%>%
 column_spec(3, color = "#42A7F5")
 ```
+
+
+### Which Menu Items Should I Order?:
+
+> Burger King is known for it's hamburgers, hence the name of the fast food restaurant. The graph and table above show the menu items offered at Burger King locations all around the US grouped into 3 different clusters. Each cluster represents a grouping of menu items with different levels of protien and calories. Group 1 is labeled as Average for Calories/Protien because the food items in that cluster contain an average of 654 calories and 30 grams of protein. Group 2 is labeled as Least Protien/Calorie Dense Items because it has the lowest levels of calories and protein for all the groups with an average of 345 calories and 16 grams of protien. Choosing a menu item from this category would be a good idea if you are trying to follow a diet of healthier foods. More Rich in Calories/Protien is the name of group 3 because those items have an average of 1052 calories and 59 grams of proteins. If you are looking to bulk up and eat a meal that is very filling, this is the category to choose from. 
 
 ## Looking Over All The Variables
 
@@ -365,8 +375,8 @@ ggplot(chf_clusters_c3, aes(x = calories, y = sodium, color = .cluster)) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Chick-fil-A Menu Items Grouped Based on Calories and Sodium",
-       x = "Calories",
-       y = "Sodium",
+       x = "Calories (kilocalories)",
+       y = "Sodium (milligrams)",
        color = "Cluster") +
   theme_classic() +
   xlim(c(0,1200)) +
@@ -401,6 +411,11 @@ column_spec(1, color = "#f54242") %>%
 column_spec(2, color = "#2abd09")%>%
 column_spec(3, color = "#42A7F5")
 ```
+
+### Which Menu Items Should I Order?:
+
+> Chick-Fil-A is known for it's fast food meals like chicken and french fries. The graph and table above show the menu items offered at Chick-Fil-A locations all around the US grouped into 3 different clusters. Each cluster represents a grouping of menu items with different levels of sodium and calories. Group 1 is labeled as Very Salty because the food items in that cluster contain the heighest amounts of calories and sodium with an average of 915 calories and 3090 mg of sodium. Group 2 is labeled as On the lower side for Calories/Sodium because it has the lowest levels of calories and sodium for all the groups with an average of 210 calories and 641 mg of sodium. Choosing a menu item from this category would be a good idea if you are trying to follow a diet of healthier foods which contain less salt. Average For Chick-Fil-A is the name of group 3 because those items have an average of 484 calories and 1383 mg of sodium. 
+
 
 ## Looking Over All The Variables
 
