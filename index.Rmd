@@ -165,13 +165,16 @@ ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster)) +
   xlim(c(0,1200)) +
       ylim(c(0,75))
 
+```
+
+### Information About Clusters:
+```{r}
 #Get Important Data Points and What items are in which cluster
 arb_summaries <- tidy(arb_clusters_4)
-arb_summaries
 
-arb_clusters_4$centers
+kable(arb_summaries)
 
-cluster_list <- split(arb_nutrition$item, arb_clusters_4$cluster)
+cluster_list_arb <- split(arb_nutrition$item, arb_clusters_4$cluster)
 
 # make into dataframe to print nicely with kable
 arb_dat <- matrix(NA
@@ -179,21 +182,20 @@ arb_dat <- matrix(NA
               , ncol=length(arb_summaries$cluster))
 
 for (i in 1:max(arb_clusters_4$cluster)){
-  jmax <- length(cluster_list[[i]])
+  jmax <- length(cluster_list_arb[[i]])
   for (j in 1:jmax)
-    arb_dat[j,i] <- cluster_list[[i]][j]
+    arb_dat[j,i] <- cluster_list_arb[[i]][j]
 }
 
 arb_dat %>%
   kable(col.names = c("Group 1", "Bring on the calories and protein!"
                       , "Group 3", "If you're on a diet . . .")) %>%
 column_spec(1, color = "#F8766D") %>%
-column_spec(2, color = "#00BA38") %>%
-column_spec(3, color = "#619CFF") %>%
+column_spec(2, color = "#528c1c") %>%
+column_spec(3, color = "#27adad") %>%
 column_spec(4, color = "#C77CFF")
 
 ```
-
 
 ## Looking Over All The Variables
 
@@ -269,14 +271,34 @@ ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster)) +
   xlim(c(0,1500)) +
       ylim(c(0,75))
 
+```
+
+### Information About Clusters:
+```{r}
 #Get Important Data Points and What items are in which cluster
 bk_summaries <- tidy(bk_clusters_3)
-bk_summaries
 
-bk_clusters_3$centers
+kable(bk_summaries)
 
-cluster_list <- split(bk_nutrition$item, bk_clusters_3$cluster)
-cluster_list
+cluster_list_bk <- split(bk_nutrition$item, bk_clusters_3$cluster)
+
+# make into dataframe to print nicely with kable
+bk_dat <- matrix(NA
+              , nrow=max(bk_summaries$size)
+              , ncol=length(bk_summaries$cluster))
+
+for (i in 1:max(bk_clusters_3$cluster)){
+  jmax <- length(cluster_list_bk[[i]])
+  for (j in 1:jmax)
+    bk_dat[j,i] <- cluster_list_bk[[i]][j]
+}
+
+bk_dat %>%
+  kable(col.names = c("Average For Burger King", "On the Richer Side"
+                      , "Most Fatty/Calorie Dense Items"))%>%
+column_spec(1, color = "#f54242") %>%
+column_spec(2, color = "#2abd09")%>%
+column_spec(3, color = "#42A7F5")
 ```
 
 ## Looking Over All The Variables
@@ -350,16 +372,35 @@ ggplot(chf_clusters_c3, aes(x = calories, y = protein, color = .cluster)) +
   xlim(c(0,900)) +
       ylim(c(0,60))
 
-#Get Important Data Points and What items are in which cluster
-chf_summaries <- tidy(chf_clusters_3)
-chf_summaries
-
-chf_clusters_3$centers
-
-cluster_list <- split(chf_nutrition$item, chf_clusters_3$cluster)
-cluster_list
 ```
 
+### Information About Clusters:
+```{r}
+#Get Important Data Points and What items are in which cluster
+chf_summaries <- tidy(chf_clusters_3)
+
+kable(chf_summaries)
+
+cluster_list_chf <- split(chf_nutrition$item, chf_clusters_3$cluster)
+
+# make into dataframe to print nicely with kable
+chf_dat <- matrix(NA
+              , nrow=max(chf_summaries$size)
+              , ncol=length(chf_summaries$cluster))
+
+for (i in 1:max(chf_clusters_3$cluster)){
+  jmax <- length(cluster_list_chf[[i]])
+  for (j in 1:jmax)
+    chf_dat[j,i] <- cluster_list_chf[[i]][j]
+}
+
+chf_dat %>%
+  kable(col.names = c("Average For Chick-Fil-A", "On the Richer Side"
+                      , "Most Fatty/Calorie Dense Items"))%>%
+column_spec(1, color = "#f54242") %>%
+column_spec(2, color = "#2abd09")%>%
+column_spec(3, color = "#42A7F5")
+```
 
 ## Looking Over All The Variables
 
