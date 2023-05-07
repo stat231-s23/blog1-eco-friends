@@ -538,7 +538,7 @@ dq <- ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster, 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
-  scale_x_continuous(breaks = scales::breaks_width(50)) +
+  scale_x_continuous(breaks = scales::breaks_width(100)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Dairy Queen Menu Items Grouped Based on Calories and Total Fat",
        x = "Calories",
@@ -563,8 +563,10 @@ dq_summaries <- tidy(dq_clusers_5)%>%
 
 kable(dq_summaries) %>%
   row_spec(1, color = "#f54242") %>%
-  row_spec(2, color = "#2abd09") %>%
-  row_spec(3, color = "#42A7F5") 
+  row_spec(2, color = "#528c1c") %>%
+  row_spec(3, color = "#2abd09")%>%
+  row_spec(4, color = "#42A7F5")%>%
+  row_spec(5, color = "#C77CFF")
 
 
 cluster_list_dq <- split(dq_nutrition$item, dq_clusers_5$cluster)
@@ -689,8 +691,9 @@ mcd_summaries <- tidy(mcd_clusers_4) %>%
 
 kable(mcd_summaries) %>%
   row_spec(1, color = "#f54242") %>%
-  row_spec(2, color = "#2abd09") %>%
-  row_spec(3, color = "#42A7F5") 
+  row_spec(2, color = "#528c1c") %>%
+  row_spec(3, color = "#09bda8") %>%
+  row_spec(4, color = "#D742F5")
 
 
 cluster_list_mcd <- split(mcd_nutrition$item, mcd_clusers_4$cluster)
