@@ -1,5 +1,11 @@
+h1.title {
+  font-size: 38px;
+  text-align: center;
+}
+
 h1 {
     color: #2E5984;
+    text-align: center;
 }
 
 h2, h3, h4, h5, h6, legend {

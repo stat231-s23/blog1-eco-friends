@@ -1,7 +1,7 @@
 ---
-title: "Health At Fast Food Restaurants"
+title: "-- Health At Fast Food Restaurants --"
 author: "Cora, Sophia, Wendy"
-date: "Add a date"
+date: "May 9, 2023"
 output:
   rmdformats::readthedown: 
     css: "custom.css"
@@ -26,6 +26,8 @@ library(broom)
 library(GGally)
 library(ggrepel)
 library(mapview)
+library(plotly)
+library(ggthemes)
 
 #Loading In our data
 nutritional_data <-  read.csv("data/nutritioninfo.csv")
@@ -114,11 +116,19 @@ tacobell_nochar <- tacobell %>%
 ```
 
 
-# Introduction To Our Project
+<div class="alert alert-info">
+  <center><strong>Trigger Warning:</strong> This blog discusses eating, food, and nutrition.</center>
+</div>
 
-**Trigger Warning: This blog post discusses eating, food, and nutrition**
+# Introduction
 
-Driving down any American city or town, there are fast food restaurants lining the streets. Faced with time constraints from work, childcare, and commuting, many people often turn to convenience foods to save time. Although these restaurants offer a solution to lost time in terms of food preparation and clean up, they simultaneously propose a new problem: a poor diet. According to a 2015 review, fast food is often high in sugar, salt, saturated or trans fats, and many processed preservatives, while also lacking beneficial nutrients.  The goal of this blog is to answer the question: “Which fast food items from various restaurants best fit health-conscious dietary needs?” By categorizing all of the menu items at the most popular fast-food restaurants, we aim to provide readers with information that might influence their next order. Should you find yourself at Arbys, Burger King, Chick-Fil-A, Dairy Queen, McDonald’s, Sonic, Subway, or Taco Bell, we hope that you’ll be equipped with exactly what you need to know in order to stick to your health goals.
+Driving down any American city or town, there are fast food restaurants lining the streets. Faced with time constraints from work, childcare, and commuting, many people often turn to convenience foods to save time. Although these restaurants offer a solution to lost time in terms of food preparation and clean up, they simultaneously propose a new problem: a poor diet. According to a 2015 review, fast food is often high in sugar, salt, saturated or trans fats, and many processed preservatives, while also lacking beneficial nutrients.  The goal of this blog is to answer the question: “Which fast food items from various restaurants best fit health-conscious dietary needs?” By categorizing all of the menu items at the most popular fast-food restaurants, we aim to provide readers with information that might influence their next order. Should you find yourself at Arby's, Burger King, Chick-Fil-A, Dairy Queen, McDonald’s, Sonic, Subway, or Taco Bell, we hope that you’ll be equipped with exactly what you need to know in order to stick to your health goals.
+
+## Suggested Daily Nutrition
+
+```{r, out.width="60%", out.height="60%", fig.align="center"}
+knitr::include_graphics("img/wellnessbanner.png")
+```
 
 For reference, here are the average daily requirements for various types of nutrition:
 
@@ -128,15 +138,23 @@ For reference, here are the average daily requirements for various types of nutr
 * **Fat:** 20-35% of total daily calories, or at least 20-35 g/day.
 * **Cholesterol:** Less than 300 milligrams per day for most adults, and less than 200 milligrams per day for individuals with heart disease or high blood cholesterol levels.
 * **Sodium:** Less than 2,300 milligrams per day for most adults, and less than 1,500 milligrams per day for individuals with high blood pressure, kidney disease, or other health conditions.
-* **Sugar:** the American Heart Association recommends no more than 25 grams per day for women and 38 grams per day for men.
+* **Sugar:** No more than 25 grams per day for women and 38 grams per day for men.
 
-Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. It can be found at this link: (https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition), where you can view other variables that were not a part of our analysis if you are interested in exploring further.
+## Data & Limitations
+
+Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. The full data set can be found [HERE](https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition), where you can view other variables that were not a part of our analysis.
 
 A possible limitation of our data analysis is the fact that the nutritional information or availability of certain menu items could differ depending on the location. Our data does not account for this variability. Another limitation is that we focus on two kinds of nutrients at a  time.  It is difficult to get a total picture of health when you are only given enough information to compare two health components. To remedy this, we provide a matrix of plots with comparisons for all our variables at the end of each restaurant’s analysis.
 
 # Arbys
 
-```{r}
+Arby's is known for it's food items with meat in them. The Arby's commercial solgan saying, "We have the meats" is catering to an audience of people looking for high protien items. The graph and table below show the menu items offered at Arby's locations all around the US grouped into 4 different clusters. 
+
+### Calories and Protein: {.tabset}
+
+#### Scatterplot
+
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 arb_clusters_data <- arb_nutrition %>% 
   select(calories, protein)%>%
   drop_na
@@ -150,7 +168,7 @@ arb_clusters_4 <- arb_clusters_data %>%
 
 arb_clusters_c4 <- augment(arb_clusters_4, arb_nutrition)
 
-ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster)) + 
+arb <- ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster, label = item)) + 
   geom_point() +
   geom_text_repel(aes(label = item), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -161,18 +179,28 @@ ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster)) +
        x = "Calories (kilocalories)",
        y = "Protein (grams)",
        color = "Cluster") +
-  theme_classic() +
   xlim(c(0,1200)) +
-      ylim(c(0,75))
+      ylim(c(0,75)) + 
+  theme_economist() +
+  theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+
+ggplotly(arb)
 
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
-### Information About Clusters:
+#### Cluster Details
+
 ```{r}
 #Get Important Data Points and What items are in which cluster
 arb_summaries <- tidy(arb_clusters_4)
 
-kable(arb_summaries)
+kable(arb_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 cluster_list_arb <- split(arb_nutrition$item, arb_clusters_4$cluster)
 
@@ -197,12 +225,7 @@ column_spec(4, color = "#C77CFF")
 
 ```
 
-### Which Menu Items Should I Order?:
-
-> Arby's is known for it's food items with meat in them. The Arby's commercial solgan saying, "We have the meats" is catering to an audience of people looking for high protien items. The graph and table above show the menu items offered at Arby's locations all around the US grouped into 4 different clusters. Each cluster represents a grouping of menu items with different levels of protien and calories. Group 1 is labeled as Lower Average for Calories/Protien because the food items in that cluster contain an average of 483 calories and 26 grams of protein. Group 2 is labeled as Bring on the Calories and Protein! because it has the highest levels of calories and protein for all the groups with an average of 950 calories and 46 grams of protien. Choosing a menu item from this category would be a good idea if you are looking for a big filling meal that is high in protien. Higher Average for Calories/Protien is the name of group 3 because those items have an average of 678 calories and 37 grams of proteins. The final group 4 is labled If you're on a diet... because these menu items are catering to people who want to consume a lighter meal that is not heavy in calories or protien. The averages from this group are 258 calories and 15 grams of protein. 
-
-
-## Looking Over All The Variables
+#### Matrix
 
 ```{r}
 #This is for dq (we used 4 clusters before, so we are going to use that again for consistency)
@@ -242,10 +265,19 @@ ggpairs(arb_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
   theme(text = element_text(size = 8))
 ```
 
+### What Should I Order?
+
+Each cluster represents a grouping of menu items with different levels of protien and calories. Group 1 is labeled as Lower Average for Calories/Protien because the food items in that cluster contain an average of 483 calories and 26 grams of protein. Group 2 is labeled as Bring on the Calories and Protein! because it has the highest levels of calories and protein for all the groups with an average of 950 calories and 46 grams of protien. Choosing a menu item from this category would be a good idea if you are looking for a big filling meal that is high in protien. Higher Average for Calories/Protien is the name of group 3 because those items have an average of 678 calories and 37 grams of proteins. The final group 4 is labled If you're on a diet... because these menu items are catering to people who want to consume a lighter meal that is not heavy in calories or protien. The averages from this group are 258 calories and 15 grams of protein. 
 
 # Burger King
 
-```{r}
+Burger King is known for it's hamburgers, hence the name of the fast food restaurant. The graph and table below show the menu items offered at Burger King locations all around the US grouped into 3 different clusters.
+
+### Calories and Protein: {.tabset}
+
+#### Scatterplot
+
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 bk_clusters_data <- bk_nutrition %>% 
   select(calories, protein)%>%
   drop_na
@@ -262,7 +294,7 @@ drop_na
   
 bk_clusters_c3 <- augment(bk_clusters_3, bk_nutrition)
 
-ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster)) + 
+bk <- ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster, label = item)) + 
   geom_point() +
   geom_text_repel(aes(label = item), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -272,18 +304,27 @@ ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster)) +
        x = "Calories (kilocalories)",
        y = "Protein (grams)",
        color = "Cluster") +
-  theme_classic() +
   xlim(c(0,1500)) +
-      ylim(c(0,75))
+  ylim(c(0,75)) +
+  theme_economist() +
+  theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
 
+ggplotly(bk)
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
-### Information About Clusters:
+#### Cluster Details
+
 ```{r}
 #Get Important Data Points and What items are in which cluster
 bk_summaries <- tidy(bk_clusters_3)
 
-kable(bk_summaries)
+kable(bk_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 cluster_list_bk <- split(bk_nutrition$item, bk_clusters_3$cluster)
 
@@ -306,12 +347,7 @@ column_spec(2, color = "#2abd09")%>%
 column_spec(3, color = "#42A7F5")
 ```
 
-
-### Which Menu Items Should I Order?:
-
-> Burger King is known for it's hamburgers, hence the name of the fast food restaurant. The graph and table above show the menu items offered at Burger King locations all around the US grouped into 3 different clusters. Each cluster represents a grouping of menu items with different levels of protien and calories. Group 1 is labeled as Average for Calories/Protien because the food items in that cluster contain an average of 654 calories and 30 grams of protein. Group 2 is labeled as Least Protien/Calorie Dense Items because it has the lowest levels of calories and protein for all the groups with an average of 345 calories and 16 grams of protien. Choosing a menu item from this category would be a good idea if you are trying to follow a diet of healthier foods. More Rich in Calories/Protien is the name of group 3 because those items have an average of 1052 calories and 59 grams of proteins. If you are looking to bulk up and eat a meal that is very filling, this is the category to choose from. 
-
-## Looking Over All The Variables
+#### Matrix
 
 ```{r}
 #This is for dq (we used 3 clusters before, so we are going to use that again for consistency)
@@ -351,10 +387,19 @@ ggpairs(bk_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
   theme(text = element_text(size = 8))
 ```
 
+### What Should I Order?
+
+Each cluster represents a grouping of menu items with different levels of protien and calories. Group 1 is labeled as Average for Calories/Protien because the food items in that cluster contain an average of 654 calories and 30 grams of protein. Group 2 is labeled as Least Protien/Calorie Dense Items because it has the lowest levels of calories and protein for all the groups with an average of 345 calories and 16 grams of protien. Choosing a menu item from this category would be a good idea if you are trying to follow a diet of healthier foods. More Rich in Calories/Protien is the name of group 3 because those items have an average of 1052 calories and 59 grams of proteins. If you are looking to bulk up and eat a meal that is very filling, this is the category to choose from. 
 
 # Chick-Fil-A
 
-```{r}
+Chick-Fil-A is known for it's fast food meals like chicken and french fries. The graph and table above show the menu items offered at Chick-Fil-A locations all around the US grouped into 3 different clusters.
+
+### Calories and Sodium: {.tabset}
+
+#### Scatterplot
+
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 chf_clusters_data <- chf_nutrition %>% 
   select(calories, sodium)%>%
   drop_na
@@ -368,7 +413,7 @@ chf_clusters_3 <- chf_clusters_data %>%
 
 chf_clusters_c3 <- augment(chf_clusters_3, chf_nutrition)
 
-ggplot(chf_clusters_c3, aes(x = calories, y = sodium, color = .cluster)) + 
+chfa <- ggplot(chf_clusters_c3, aes(x = calories, y = sodium, color = .cluster, label = item)) + 
   geom_point() +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -378,18 +423,28 @@ ggplot(chf_clusters_c3, aes(x = calories, y = sodium, color = .cluster)) +
        x = "Calories (kilocalories)",
        y = "Sodium (milligrams)",
        color = "Cluster") +
-  theme_classic() +
   xlim(c(0,1200)) +
-      ylim(c(0,4500))
+  ylim(c(0,4500)) +
+  theme_economist() +
+  theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+  
+ggplotly(chfa)
 
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
-### Information About Clusters:
+#### Cluster Details
+
 ```{r}
 #Get Important Data Points and What items are in which cluster
 chf_summaries <- tidy(chf_clusters_3)
 
-kable(chf_summaries)
+kable(chf_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 cluster_list_chf <- split(chf_nutrition$item, chf_clusters_3$cluster)
 
@@ -412,12 +467,7 @@ column_spec(2, color = "#2abd09")%>%
 column_spec(3, color = "#42A7F5")
 ```
 
-### Which Menu Items Should I Order?:
-
-> Chick-Fil-A is known for it's fast food meals like chicken and french fries. The graph and table above show the menu items offered at Chick-Fil-A locations all around the US grouped into 3 different clusters. Each cluster represents a grouping of menu items with different levels of sodium and calories. Group 1 is labeled as Very Salty because the food items in that cluster contain the heighest amounts of calories and sodium with an average of 915 calories and 3090 mg of sodium. Group 2 is labeled as On the lower side for Calories/Sodium because it has the lowest levels of calories and sodium for all the groups with an average of 210 calories and 641 mg of sodium. Choosing a menu item from this category would be a good idea if you are trying to follow a diet of healthier foods which contain less salt. Average For Chick-Fil-A is the name of group 3 because those items have an average of 484 calories and 1383 mg of sodium. 
-
-
-## Looking Over All The Variables
+#### Matrix
 
 ```{r}
 #This is for dq (we used 3 clusters before, so we are going to use that again for consistency)
@@ -457,13 +507,19 @@ ggpairs(chf_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
   theme(text = element_text(size = 8))
 ```
 
+### What Should I Order?
+
+Each cluster represents a grouping of menu items with different levels of sodium and calories. Group 1 is labeled as Very Salty because the food items in that cluster contain the heighest amounts of calories and sodium with an average of 915 calories and 3090 mg of sodium. Group 2 is labeled as On the lower side for Calories/Sodium because it has the lowest levels of calories and sodium for all the groups with an average of 210 calories and 641 mg of sodium. Choosing a menu item from this category would be a good idea if you are trying to follow a diet of healthier foods which contain less salt. Average For Chick-Fil-A is the name of group 3 because those items have an average of 484 calories and 1383 mg of sodium. 
+
 # Dairy Queen
 
-## Calories and Total Fat
+While Dairy Queen is most known for their perfect swirls of soft-serve ice cream, many locations have a full fast food menu. In my graph and tables below, all 42 menu items offered at Dairy Queen across the country are grouped together into five different clusters based on their total calories and total fat.
 
-### Graphing the Clusters:
+### Calories and Total Fat: {.tabset}
 
-```{r}
+#### Scatterplot
+
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 #Selecting our two variables
 dq_clusters_data <- dq_nutrition %>% 
   select(calories, total_fat)%>%
@@ -478,7 +534,7 @@ dq_clusers_5 <- dq_clusters_data %>%
 
 dq_clusers_c5 <- augment(dq_clusers_5, dq_nutrition)
 
-ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster)) + 
+dq <- ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster, label = item)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -488,20 +544,27 @@ ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster)) +
        x = "Calories",
        y = "Total Fat",
        color = "Cluster") +
-  theme_classic() +
-  xlim(c(0,1280)) +
-      ylim(c(0,80))
+  theme_economist() +
+  theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+  
+ggplotly(dq)
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
+#### Cluster Details
 
-### Information About Clusters:
 ```{r}
 #Get Important Data Points and What items are in which cluster
 dq_summaries <- tidy(dq_clusers_5)%>%
     rename(Calories = calories, Total_Fat = total_fat, 
            Size = size, Withiness = withinss)
 
-kable(dq_summaries)
+kable(dq_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 
 cluster_list_dq <- split(dq_nutrition$item, dq_clusers_5$cluster)
@@ -527,13 +590,7 @@ column_spec(4, color = "#42A7F5")%>%
 column_spec(5, color = "#C77CFF")
 ```
 
-### Which Menu Items Should I Order?:
-
-> While Dairy Queen is most known for their perfect swirls of soft-serve ice cream, many locations have a full fast food menu. In my graph and tables above, all 42 menu items offered at Dairy Queen across the country are grouped together into five different clusters based on their total calories and total fat. The first cluster contains 14 menu items, which are listed under “Average for Dairy Queen” This is labeled this way because these menu items have an average of 568.5714 calories per serving, and 30.64 grams of fat, which is right in the middle for these five groups. If you find yourself at a Dairy Queen and want to feel full and don’t mind consuming a bunch of calories and fat, choosing an item from this list would be a good idea. The second cluster is labeled “On the Richer Side” and these menu items contain an average of 812.5 calories and 49 grams of total fat. These four items contain the second-highest average amount of calories and fat for Dairy Queen. So, if you are at Dairy Queen, and want to have a large meal that is very satisfying, these four items may be a good choice. The third cluster also contains four items, which have an average of 1,085 calories, and 67 grams of total fat. This is labeled “Most Fatty/Calorie Dense Items” because these four items are the items with the highest calories and fat that DQ offers. So, if you plan on ordering any of these four items, I would be informed that you are consuming a lot of fat and a lot of calories. The fourth Cluster is labeled “lower calorie and fat food items” because it contains some of the least rich items on the menu. These items have an average of 340.5556 calories and only 17.611 grams of total fat. These 18 items would be a good choice for anyone who is looking to have a lighter meal and still feel satisfied after eating it. The fifth and final Category is labeled “The Few Low Calorie/Fat Items” and contains the two salads that Dairy Queen has to offer. These two salads have an average of 85 calories and only 1 gram of fat. So, if you are on a diet or want a small snack while at Dairy Queen, these two options are perfect for you. 
-
-
-
-## Looking Over All The Variables
+#### Matrix
 
 ```{r}
 #This is for dq (we used 5 clusters before, so we are going to use that again for consistency)
@@ -573,19 +630,19 @@ ggpairs(dq_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
   theme(text = element_text(size = 8))
 ```
 
-### What Does This Mean:
+### What Should I Order?
 
-> Above one can look at the relationship between each of the seven variables that are most important for looking at the health of the food that you are eating. These components are calories, total fat, protein, cholesterol, sodium, total carbs, and sugar. While this graph is a lot to look at, it allows you to focus on two of the variables that matter most to you. For example, if you are most interested in sugar, you can see that almost all of the food items contain the same amount of sugar, so this variable may not be that interesting because it does not change much depending on which food item. Looking at this graph is why total fat and calories are highlighted in the graph above. It is clear that these two have a very high positive linear correlation and the clusters are clearly separated from one another.
+The first cluster contains 14 menu items, which are listed under “Average for Dairy Queen” This is labeled this way because these menu items have an average of 568.5714 calories per serving, and 30.64 grams of fat, which is right in the middle for these five groups. If you find yourself at a Dairy Queen and want to feel full and don’t mind consuming a bunch of calories and fat, choosing an item from this list would be a good idea. The second cluster is labeled “On the Richer Side” and these menu items contain an average of 812.5 calories and 49 grams of total fat. These four items contain the second-highest average amount of calories and fat for Dairy Queen. So, if you are at Dairy Queen, and want to have a large meal that is very satisfying, these four items may be a good choice. The third cluster also contains four items, which have an average of 1,085 calories, and 67 grams of total fat. This is labeled “Most Fatty/Calorie Dense Items” because these four items are the items with the highest calories and fat that DQ offers. So, if you plan on ordering any of these four items, I would be informed that you are consuming a lot of fat and a lot of calories. The fourth Cluster is labeled “lower calorie and fat food items” because it contains some of the least rich items on the menu. These items have an average of 340.5556 calories and only 17.611 grams of total fat. These 18 items would be a good choice for anyone who is looking to have a lighter meal and still feel satisfied after eating it. The fifth and final Category is labeled “The Few Low Calorie/Fat Items” and contains the two salads that Dairy Queen has to offer. These two salads have an average of 85 calories and only 1 gram of fat. So, if you are on a diet or want a small snack while at Dairy Queen, these two options are perfect for you. 
 
+# McDonald's
 
+When someone thinks of American food, McDonald’s is immediately brought to mind. The classic burger and fries, ice cream cone, and chicken nuggets were all perfected by McDonald’s. Almost everyone finds themselves at a McDonald’s at some point in their lives, so this diagram and tables should help to make an informed decision when ordering at McDonald’s. 
 
-# Mcdonalds
+### Calories and Total Fat: {.tabset}
 
-## Calories and Total Fat
+#### Scatterplot
 
-### Graphing The Clusters:
-
-```{r}
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 #Selecting Variables
 mcd_clusters_data <- mcd_nutrition %>% 
   select(calories, total_fat)%>%
@@ -601,7 +658,7 @@ mcd_clusers_4 <- mcd_clusters_data %>%
 
 mcd_clusers_c4 <- augment(mcd_clusers_4, mcd_nutrition)
 
-ggplot(mcd_clusers_c4, aes(x = calories, y = total_fat)) + 
+mcd <- ggplot(mcd_clusers_c4, aes(x = calories, y = total_fat, label = item)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -611,23 +668,29 @@ ggplot(mcd_clusers_c4, aes(x = calories, y = total_fat)) +
        x = "Calories",
        y = "Total Fat",
        color = "Cluster") +
-  theme_classic() +
-  xlim(c(0,2500)) +
-      ylim(c(0,160))
+  theme_economist() +
+  theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+  
+ggplotly(mcd)
 
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
+#### Cluster Details
 
-### Describing the Clusters:
-
-```{r}
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 
 #Get Important Data Points and What items are in which cluster
 mcd_summaries <- tidy(mcd_clusers_4) %>%
     rename(Calories = calories, Total_Fat = total_fat, 
            Size = size, Withiness = withinss)
 
-kable(mcd_summaries)
+kable(mcd_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 
 cluster_list_mcd <- split(mcd_nutrition$item, mcd_clusers_4$cluster)
@@ -653,13 +716,7 @@ column_spec(4, color = "#D742F5")
 
 ```
 
-
-### Which Menu Items Should I Order?:
-
-> When someone thinks of American food, McDonald’s is immediately brought to mind. The classic burger and fries, ice cream cone, and chicken nuggets were all perfected by McDonald’s. Almost everyone finds themselves at a Mcdonald’s at some point in their lives, so this diagram and tables should help to make an informed decision when ordering at McDonald’s. The 57 menu items that can be found at McDonald’s are categorized into four different clusters based on calories and total fat. The 22 items in the first cluster labeled “Average for Mcdonalds” and displayed in the graph with the army green color have 714.5455 calories on average and 34.59 average grams of total fat. These items would be good choices for someone that is fairly hungry and wants a hearty meal that is not overly rich. The second cluster labeled “The Fattiest and Most Calorie Dense Item on the Menu, and is labeled in bright green on the graph only contains one item. This item is the 20-piece Buttermilk Crispy Chicken Tenders, which contains 2,430 calories, and 141 grams of fat. This item contains over the daily recommended calories for a person, and over four times the recommended amount of fat per day. So, this item is only recommended for someone looking to share the food with someone else, or someone who needs to consume a lot more calories and fat than the average person. The third cluster is labeled Least Fatty/Calorie dense items and contains 29 menu items. This cluster contains the least fatty items on the menu at McDonald’s, shown in blue on the graph. However, the numbers are still rather high. The average calories for this cluster are 383.79 and the average fat is 17.68. So, if you are looking for the least calorie-dense items at McDonald’s, this is the list for you. The final cluster is labeled High Calories and Fat and is shown in purple on the graph. This cluster contains five items and are the highest in fat and calories besides the one item in the second cluster. These items have an average of 1,444 calories and 79.6 grams of total fat. So, if you are looking for a large and very filling meal, these items are a good choice for you.
-
-
-## Looking Over all The Nutrition Facts
+#### Matrix
 
 ```{r}
 #This for mcdonalds (we used 4 clusters before, so we are going to use that again for consistency)
@@ -699,18 +756,20 @@ ggpairs(mcd_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
   theme(text = element_text(size = 8))
 ```
 
-### What Does This Mean:
+### What Should I Order?
 
-> While total fat and calories are singled out above, this graph can show you the relationship between seven different health variables that you may be interested in for your health at a fast food restaurant. You can look at the distribution of any of the factors in menu items at Mcdonald's, for example, in cholesterol, you can see that the purple cluster has the lowest cholesterol than green, but then blue and red overlap quite a bit. You can also look at the relationship between two of the variables, for example, if you look at sugar, you can see that there does not appear to be a very strong association between sugar and any of the other variables, which is explained by the fact that most of the menu items are very low in sugar. Looking at total fat and calories, there appears to be a very linear positive relationship, which is why this relationship is highlighted above, but any of the other relationships can be explored here.
+The 57 menu items that can be found at McDonald’s are categorized into four different clusters based on calories and total fat. The 22 items in the first cluster labeled “Average for Mcdonalds” and displayed in the graph with the army green color have 714.5455 calories on average and 34.59 average grams of total fat. These items would be good choices for someone that is fairly hungry and wants a hearty meal that is not overly rich. The second cluster labeled “The Fattiest and Most Calorie Dense Item on the Menu, and is labeled in bright green on the graph only contains one item. This item is the 20-piece Buttermilk Crispy Chicken Tenders, which contains 2,430 calories, and 141 grams of fat. This item contains over the daily recommended calories for a person, and over four times the recommended amount of fat per day. So, this item is only recommended for someone looking to share the food with someone else, or someone who needs to consume a lot more calories and fat than the average person. The third cluster is labeled Least Fatty/Calorie dense items and contains 29 menu items. This cluster contains the least fatty items on the menu at McDonald’s, shown in blue on the graph. However, the numbers are still rather high. The average calories for this cluster are 383.79 and the average fat is 17.68. So, if you are looking for the least calorie-dense items at McDonald’s, this is the list for you. The final cluster is labeled High Calories and Fat and is shown in purple on the graph. This cluster contains five items and are the highest in fat and calories besides the one item in the second cluster. These items have an average of 1,444 calories and 79.6 grams of total fat. So, if you are looking for a large and very filling meal, these items are a good choice for you.
 
 
 # Sonic
 
-## Calories and Protein
- 
-### Graphing Our Clusters:
+Sonic is known for its comedic commercials and unique drive-in setup. However, they also are popular for their greasy fast food. In the graph and tables below, the 53 menu items offered at Sonic are split into three categories based on their calories and protein. 
 
-```{r}
+### Calories and Protein: {.tabset}
+
+#### Scatterplot
+
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
 #Selecting Variables
 sonic_clusters_data <- sonic_nutrition %>% 
   select(calories, protein)%>%
@@ -725,7 +784,7 @@ sonic_clusers_3 <- sonic_clusters_data %>%
 
 sonic_clusers_c3 <- augment(sonic_clusers_3, sonic_nutrition)
 
-ggplot(sonic_clusers_c3, aes(x = calories, y = protein)) + 
+son <- ggplot(sonic_clusers_c3, aes(x = calories, y = protein, label = item)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
@@ -735,13 +794,16 @@ ggplot(sonic_clusers_c3, aes(x = calories, y = protein)) +
        x = "Calories",
        y = "Protein",
        color = "Cluster") +
-  theme_classic() +
-  xlim(c(0,1500)) +
-      ylim(c(0,70))
+ theme_economist() +
+ theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+  
+ggplotly(son)
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
-
-### Defining The Clusters:
+#### Cluster Details
 
 ```{r}
 #Get Important Data Points and What items are in which cluster
@@ -750,7 +812,10 @@ sonic_summaries <- tidy(sonic_clusers_3)%>%
            Size = size, Withiness = withinss)
 
 
-kable(sonic_summaries)
+kable(sonic_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 cluster_list_sonic <- split(sonic_nutrition$item, sonic_clusers_3$cluster)
 
@@ -774,13 +839,7 @@ column_spec(3, color = "#42A7F5")
 
 ```
 
-
-### Which Menu Items Should I Order?:
-
-> Sonic is known for its comedic commercials and unique drive-in setup. However, they also are popular for their greasy fast food. In the graph and tables above, the 53 menu items offered at Sonic are split into three categories based on their calories and protein. The first cluster named, “Low Calorie and Protein” and labeled in green contains the 24 lowest-calorie and protein-rich items on the menu. These items would be a good choice for anyone who is looking for the lightest menu items from Sonic. This cluster has an average calorie count of 377.5 and an average of 18.66 grams of protein. The second cluster, labeled “Middle Calories and Protein” contains the 19 menu items at Sonic that contain the average amount of calories and protein that are offered at Sonic. These items would be a good choice for anyone wanting to leave Sonic to feel full and satisfied and eat plenty of protein to work to fulfill their daily requirement. This cluster is labeled in blue on the graph and has an average of 682.1 calories and 32.789 grams of protein on average. Finally, the last cluster is labeled in purple on the graph and is titled “Extremely Calorie and protein-rich. These 10 menu items are perfect for a customer who is looking to consume a lot of calories and protein. This cluster contains items with an average of 1,146 calories, and 47.6 grams of protein. Hopefully, this list helps you to decide which menu item you would like to order.
-
-
-## Looking Over All The Variables 
+#### Matrix
 
 ```{r}
 #This for sonic (we used 3 clusters before, so we are going to use that again for consistency)
@@ -821,17 +880,15 @@ ggpairs(sonic_nutrition_full_scaled_clusters, aes(color = cluster_scaled),
 
 ```
 
-### What Does This Mean:
+### What Should I Order?
 
-> Even though the above protein and calories are highlighted as descriptors of which menu items one should order, there is a lot more to consider when thinking about your diet. The graph above showcases the distribution of seven different health indicators. Looking at the distributions of the different clusters is very interesting because you can see that most of the clusters show one that is low, one medium, and one high cluster, except for sodium, and sugar. All the menu items appear to be around the same for sodium, and for sugar, there appears to be One group of items that are lower in sugar and two that are about medium in sugar. It is also interesting to note the relationships between each of the variables. It seems that almost every variable is related to one another in a positive way, with sugar and sodium being the least heavily correlated. Calories and protein are highlighted to be compared, because the distribution of protein is interesting with the first cluster being fairly spread out and in protein, then a giant spike of a lot of items being medium in protein, and then again, a fairly spread out distribution of items on the higher end. If you are interested in a more well-rounded description of the menu items at Sonic, this is a great place to start.
-
+The first cluster named, “Low Calorie and Protein” and labeled in green contains the 24 lowest-calorie and protein-rich items on the menu. These items would be a good choice for anyone who is looking for the lightest menu items from Sonic. This cluster has an average calorie count of 377.5 and an average of 18.66 grams of protein. The second cluster, labeled “Middle Calories and Protein” contains the 19 menu items at Sonic that contain the average amount of calories and protein that are offered at Sonic. These items would be a good choice for anyone wanting to leave Sonic to feel full and satisfied and eat plenty of protein to work to fulfill their daily requirement. This cluster is labeled in blue on the graph and has an average of 682.1 calories and 32.789 grams of protein on average. Finally, the last cluster is labeled in purple on the graph and is titled “Extremely Calorie and protein-rich. These 10 menu items are perfect for a customer who is looking to consume a lot of calories and protein. This cluster contains items with an average of 1,146 calories, and 47.6 grams of protein. Hopefully, this list helps you to decide which menu item you would like to order.
 
 # Subway
-## Looking at Calories and Sugar
 
-> In 2020, Ireland’s Supreme Court announced its ruling in a years-long legal battle: “Subway bread is not bread." Under a 1972 law, Ireland deemed that the sugar content of bread cannot exceed 2% of the weight of flour in the dough. Subway bread was found to have a sugar content of about 10%.
+In 2020, Ireland’s Supreme Court announced its ruling in a years-long legal battle: “Subway bread is not bread." Under a 1972 law, Ireland deemed that the sugar content of bread cannot exceed 2% of the weight of flour in the dough. Subway bread was found to have a sugar content of about 10%.
 
-> Why is this a problem? In the United States, the average adult consumes an estimated 17 teaspoons of sugar each day. That accounts for 14% of total calorie intake in adults following a 2,000-calorie diet. Consuming too much sugar can increases the risk of obesity, diabetes, and heart disease.
+Why is this a problem? In the United States, the average adult consumes an estimated 17 teaspoons of sugar each day. That accounts for 14% of total calorie intake in adults following a 2,000-calorie diet. Consuming too much sugar can increases the risk of obesity, diabetes, and heart disease.
  
 ```{r}
 #Selecting Variables
@@ -849,33 +906,31 @@ subway_ck <- subway_selected %>%
 subway_c <- augment(subway_ck, subway)
 ```
 
-### Graphing Our Clusters:
+### Calories & Sugar: {.tabset}
 
-```{r, fig.width = 12, fig.height = 8}
-ggplot(subway_c, aes(x = calories, y = sugar)) + 
+#### Scatterplot
+
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
+sub <- ggplot(subway_c, aes(x = calories, y = sugar, label = item)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = subway_c, aes(label = ""),
-             size = 0.05,
-             label.r = unit(0.05, "lines"),
-             label.size = NA,
-             fill = NA,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "Subway Items Grouped By on Calories and Sugar Content",
        x = "Calories",
        y = "Sugar",
        color = "Cluster") +
-  theme_classic() +
-  xlim(c(0,1200)) +
-      ylim(c(0,40))
+ theme_economist() +
+ theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+  
+ggplotly(sub)
 ```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
 
-### Defining The Clusters:
+#### Cluster Details
 
 ```{r}
 #Get Important Data Points and What items are in which cluster
@@ -884,7 +939,10 @@ subway_summaries <- tidy(subway_ck)%>%
            Size = size, Withiness = withinss)
 
 
-kable(subway_summaries)
+kable(subway_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
 
 clusterlist_subway <- split(subway$item, subway_ck$cluster)
 
@@ -901,22 +959,14 @@ for (i in 1:max(subway_ck$cluster)){
 
 subway_df %>%
   kable(col.names = c("Mild Calorie, Mild Sugar Content", "High Calorie, High Sugar Content"
-                      , "Low Calorie, Low Sugar Content"))
+                      , "Low Calorie, Low Sugar Content"))%>%
+  column_spec(1, color = "#f54242") %>%
+  column_spec(2, color = "#2abd09") %>%
+  column_spec(3, color = "#42A7F5") 
 
 ```
 
-```{r}
-subway_ck$centers
-```
-
-
-### Which Menu Items Should I Order?:
-
-> Although an order at Subway can be highly customized, the visualizations above take a look at 96 items on their menu. We can split them into three categories based on their calories and sugar content. The first group, "Mild Calorie, Mild Sugar Content", is red on the scatterplot. It's worth noting that, although these options might be good for someone aiming for a calorie-deficit, there is a lot of variabiltiy in the sugar content - so one should choose wisely. This cluster has an average calorie count of 538 and an average of 10 grams of sugar. 
-
-> The second cluster, labeled “High Calorie, High Sugar Content” are items at Subway that you might want to avoid for a more health-conscious diet. These are colored green on our scatterplot. Most notably, the `Footlong Sweet Onion Chicken Teriyaki`is the item with the highest sugar-level. The sugar content in this single item is almost double the suggested daily sugar intake amount. This cluster has an average of 883 calories and 15 grams of sugar on average. 
-
-> Finally, the last cluster is blue on the graph and is titled “Low Calorie, Low Sugar Content". These menu items are perfect for someone who is looking to consume a meal that is light in calories, while staying below the suggested daily sugar intake. The variation in this group is key: there are salads, meat-based sandwiches, and veggie sandwiches. This cluster contains items with an average of 251 calories, and 7 grams of sugar.
+#### Matrix
 
 ```{r}
 # Scaling our variables
@@ -943,6 +993,15 @@ upper = list(continuous = "blank")) +
 theme(text = element_text(size = 8))
 ```
 
+
+### What Should I Order?
+
+Although an order at Subway can be highly customized, the visualizations above take a look at 96 items on their menu. We can split them into three categories based on their calories and sugar content. The first group, "Mild Calorie, Mild Sugar Content", is red on the scatter plot. It's worth noting that, although these options might be good for someone aiming for a calorie-deficit, there is a lot of variability in the sugar content - so one should choose wisely. This cluster has an average calorie count of 538 and an average of 10 grams of sugar. 
+
+The second cluster, labeled “High Calorie, High Sugar Content” are items at Subway that you might want to avoid for a more health-conscious diet. These are colored green on our scatter plot. Most notably, the _Footlong Sweet Onion Chicken Teriyaki_ is the item with the highest sugar-level. The sugar content in this single item is almost double the suggested daily sugar intake amount. This cluster has an average of 883 calories and 15 grams of sugar on average. 
+
+Finally, the last cluster is blue on the graph and is titled “Low Calorie, Low Sugar Content". These menu items are perfect for someone who is looking to consume a meal that is light in calories, while staying below the suggested daily sugar intake. The variation in this group is key: there are salads, meat-based sandwiches, and veggie sandwiches. This cluster contains items with an average of 251 calories, and 7 grams of sugar.
+
 # Taco Bell
 
 ```{r}
@@ -955,38 +1014,71 @@ tacobell_selected <- tacobell %>%
 set.seed(23)
 
 # Perform k-means clustering with k = 3
-tacobell_c <- tacobell_selected %>% 
+tacobell_ck <- tacobell_selected %>% 
   kmeans(centers = 3, nstart = 20)
 
-tacobell_c <- augment(tacobell_c, tacobell)
+tacobell_c <- augment(tacobell_ck, tacobell)
 ```
 
+### Calories and Cholesterol: {.tabset}
 
+#### Scatterplot
 
-```{r, fig.width = 12, fig.height = 8}
-ggplot(tacobell_c, aes(x = calories, y = cholesterol)) + 
+```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
+tb <- ggplot(tacobell_c, aes(label = item, x = calories, y = cholesterol)) + 
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
-  # Add centroid labels to plot
-  geom_label(data = tacobell_c, aes(label = ""),
-             size = 0.05,
-             label.r = unit(0.05, "lines"),
-             label.size = NA,
-             fill = NA,
-             label.padding = unit(0.05, "lines"),
-             show.legend = FALSE) +
   labs(title = "Taco Bell Items Grouped By on Calories and Cholesterol",
        x = "Calories",
        y = "Cholesterol",
        color = "Cluster") +
-  theme_classic() +
-  xlim(c(0,1000)) +
-      ylim(c(0,85))
+ theme_economist() +
+ theme(plot.title = element_text(size=12, colour = "#2E5984"),
+       axis.text = element_text(color = "#2E5984"),
+       text = element_text(color = "#2E5984"))
+  
+ggplotly(tb)
+```
+<center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
+
+#### Cluster Details
+
+```{r}
+#Get Important Data Points and What items are in which cluster
+tacobell_summaries <- tidy(tacobell_ck)%>%
+    rename(Calories = calories, Cholesterol = cholesterol, 
+           Size = size, Withiness = withinss)
+
+kable(tacobell_summaries) %>%
+  row_spec(1, color = "#f54242") %>%
+  row_spec(2, color = "#2abd09") %>%
+  row_spec(3, color = "#42A7F5") 
+
+clusterlist_tacobell <- split(tacobell$item, tacobell_ck$cluster)
+
+# make into dataframe to print nicely with kable
+tacobell_df <- matrix(NA
+              , nrow=max(tacobell_summaries$Size)
+              , ncol=length(tacobell_summaries$cluster))
+
+for (i in 1:max(tacobell_ck$cluster)){
+  jmax <- length(clusterlist_tacobell[[i]])
+  for (j in 1:jmax)
+    tacobell_df[j,i] <- clusterlist_tacobell[[i]][j]
+}
+
+tacobell_df %>%
+  kable(col.names = c("Mild Calorie, Mild Cholesterol", "High Calorie, High Cholesterol"
+                      , "Low Calorie, Low Cholesterol")) %>%
+  column_spec(1, color = "#f54242") %>%
+  column_spec(2, color = "#2abd09") %>%
+  column_spec(3, color = "#42A7F5") 
 ```
 
+#### Matrix
 
 ```{r, message=FALSE}
 # Scaling our variables
@@ -1013,7 +1105,7 @@ upper = list(continuous = "blank")) +
 theme(text = element_text(size = 8))
 ```
 
-
+### What Should I Order?
 
 # Conclusion
 
@@ -1021,7 +1113,7 @@ theme(text = element_text(size = 8))
 # Generate Map
 mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
 ```
-*Click a point on the map to learn more about the restaurant located there.*
+<center>*Click a point on the map to learn more about the restaurant located there.*</center>
 
 
 # References
