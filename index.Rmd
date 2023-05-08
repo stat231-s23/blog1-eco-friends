@@ -891,7 +891,7 @@ The first cluster named, “Low Calorie and Protein” and labeled in green cont
 
 In 2020, Ireland’s Supreme Court announced its ruling in a years-long legal battle: “Subway bread is not bread." Under a 1972 law, Ireland deemed that the sugar content of bread cannot exceed 2% of the weight of flour in the dough. Subway bread was found to have a sugar content of about 10%.
 
-Why is this a problem? In the United States, the average adult consumes an estimated 17 teaspoons of sugar each day. That accounts for 14% of total calorie intake in adults following a 2,000-calorie diet. Consuming too much sugar can increases the risk of obesity, diabetes, and heart disease.
+Why is this a problem? In the United States, the average adult consumes an estimated 17 teaspoons of sugar each day. That accounts for 14% of total calorie intake in adults following a 2,000-calorie diet. Consuming too much sugar can increase the risk of obesity, diabetes, and heart disease.
  
 ```{r}
 #Selecting Variables
@@ -1007,6 +1007,10 @@ Finally, the last cluster is blue on the graph and is titled “Low Calorie, Low
 
 # Taco Bell
 
+Cholesterol is a waxy substance found in your blood. Your body needs cholesterol to build healthy cells, but too much of it promotes the development fatty deposits in your blood vessels. Eventually, these deposits grow, making it difficult for enough blood to flow through your arteries. If these deposits break suddenly and form a clot, it can lead to heart attack or stroke.
+
+Taco Bell is home to a variety of Mexican-inspired foods, including tacos, burritos, quesadillas, and nachos. For many years, it has been the largest chain serving Mexican food in the United States with over 7,000 locations. The question is: Considering that almost 2 in 5 adults in the United States have high cholesterol, is Taco Bell a good choice for those at a higher risk of developing a heart condition?
+
 ```{r}
 #Selecting Variables
 tacobell_selected <- tacobell %>% 
@@ -1032,8 +1036,6 @@ tb <- ggplot(tacobell_c, aes(label = item, x = calories, y = cholesterol)) +
   geom_point(aes(color = .cluster)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
-  scale_x_continuous(breaks = scales::breaks_width(200)) +
-  scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Taco Bell Items Grouped By on Calories and Cholesterol",
        x = "Calories",
        y = "Cholesterol",
@@ -1074,8 +1076,7 @@ for (i in 1:max(tacobell_ck$cluster)){
 }
 
 tacobell_df %>%
-  kable(col.names = c("Mild Calorie, Mild Cholesterol", "High Calorie, High Cholesterol"
-                      , "Low Calorie, Low Cholesterol")) %>%
+  kable(col.names = c("Low Calorie, Low Cholesterol", "High Calorie, High Cholesterol", "Mild Calorie, Mild Cholesterol")) %>%
   column_spec(1, color = "#f54242") %>%
   column_spec(2, color = "#2abd09") %>%
   column_spec(3, color = "#42A7F5") 
@@ -1109,6 +1110,13 @@ theme(text = element_text(size = 8))
 ```
 
 ### What Should I Order?
+
+Perhaps the most important thing to note is that there is not a single item on the Taco Bell menu with a cholesterol content higher than the suggested daily intake of 200 mg for those with health conditions. In some cases however, consuming more than one item quickly approaches that limit. When examining the 115 items on their menu, we separate them into three categories depending on their calories and cholesterol content. First, the "Low Calorie, Low Cholesterol" group is red on the scatter plot and tends to have a cholesterol content between 10 mg to 40 mg. These items also have a low calorie count, in the case that you're looking to order a lighter meal. This cluster has an average calorie count of 250 and an average of 26 grams of cholesterol, making it the perfect option for anyone craving Taco Bell while maintaining a level of health-consciousness. 
+
+The second cluster, labeled “High Calorie, High Cholesterol Content” was given to this name due to it's _average_ cholesterol content of around 58 grams, with around 689 calories per item. However, it's important to note that some options in this group have a low cholesterol content and a high calorie count. For example, the _Cantina Power Burrito - Veggie_ is a great option for someone watching their cholesterol intake (10g) but wanting to increase their calorie intake (740cal). If you're looking to pair an item from this group with another option, anything from "Low Calorie, Low Cholesterol" would be great!
+
+Finally, the last cluster is blue on the graph and is titled “Mild Calorie, Mild Cholesterol Content". Similar to the last group we spoke about, there is a lot of variability in the cholesterol content. With an average calorie content of 462, while containing an average of 40 grams of cholesterol, this is the best option for anyone seeking a happy medium!
+
 
 # Conclusion
 
