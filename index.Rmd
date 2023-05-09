@@ -198,9 +198,10 @@ ggplotly(arb)
 arb_summaries <- tidy(arb_clusters_4)
 
 kable(arb_summaries) %>%
-  row_spec(1, color = "#f54242") %>%
-  row_spec(2, color = "#2abd09") %>%
-  row_spec(3, color = "#42A7F5") 
+  row_spec(1, color = "#F8766D") %>%
+  row_spec(2, color = "#528c1c") %>%
+  row_spec(3, color = "#27adad") %>%
+  row_spec(4, color = "#C77CFF") 
 
 cluster_list_arb <- split(arb_nutrition$item, arb_clusters_4$cluster)
 
