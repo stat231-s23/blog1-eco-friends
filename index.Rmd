@@ -12,7 +12,7 @@ output:
 ```{r setup, include = FALSE}
 # Set code chunk defaults 
 # Consider adding `message = FALSE` option
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE) 
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE) 
                       
 # Set R environment options
 options(knitr.kable.NA = '')
