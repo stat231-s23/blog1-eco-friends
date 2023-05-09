@@ -12,7 +12,7 @@ output:
 ```{r setup, include = FALSE}
 # Set code chunk defaults 
 # Consider adding `message = FALSE` option
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, eval = FALSE) 
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE) 
                       
 # Set R environment options
 options(knitr.kable.NA = '')
@@ -142,7 +142,7 @@ For reference, here are the average daily requirements for various types of nutr
 
 ## Data & Limitations
 
-Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. The full data set can be found [HERE](https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition), where you can view other variables that were not a part of our analysis.
+Our data is from Kaggle and was created for the purpose of analyzing the health of different fast food items. The full data set can be found [HERE](https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition), where you can view other variables that were not a part of our analysis. Information for the map in the _Conclusion_ can be found [HERE.](https://www.kaggle.com/datasets/khushishahh/fast-food-restaurants-across-us)
 
 A possible limitation of our data analysis is the fact that the nutritional information or availability of certain menu items could differ depending on the location. Our data does not account for this variability. Another limitation is that we focus on two kinds of nutrients at a  time.  It is difficult to get a total picture of health when you are only given enough information to compare two health components. To remedy this, we provide a matrix of plots with comparisons for all our variables at the end of each restaurant’s analysis.
 
@@ -1121,12 +1121,15 @@ Finally, the last cluster is blue on the graph and is titled “Mild Calorie, Mi
 
 # Conclusion
 
+The map below depicts only a fraction of the true amount of locations for the eight previously mentioned fast food chains in the United States. In reality, there are over nearly 65,000 combined locations for these eight franchises alone, and the map depicts only 5,995. This makes it abundantly clear that no matter which state you live in, it’s likely that you’ll come across at least one of these popular restaurant chains. 
+
 ```{r, echo=FALSE}
 # Generate Map
 mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
 ```
 <center>*Click a point on the map to learn more about the restaurant located there.*</center>
 
+As time goes by, more restaurants are introducing more veggie-forward meals like salads and bowls to provide customers with the perfect combination of health and affordability. After reading through our blog, we hope that you are now equipped with all the information you need to keep your health goals in mind while enjoying your meal!
 
 # References
 
@@ -1137,8 +1140,20 @@ mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE
 -  Arnold J (2021). _ggthemes: Extra Themes, Scales and Geoms for 'ggplot2'_. R
   package version 4.2.4, <https://CRAN.R-project.org/package=ggthemes>.
   
--   C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and
+- Chiu, Allyson. “Is Subway’s Bread Actually Bread? The Dispute Is a Reminder of How Much Sugar Lurks in Our Food.” The Washington Post, 8 Oct. 2020, www.washingtonpost.com/lifestyle/wellness/bread-subway-sugar-nutrition/2020/10/08/807cc1da-04fc-11eb-a2db-417cddf4816a_story.html.
+  
+- “Cholesterol.” Centers for Disease Control and Prevention, 20 Mar. 2023, www.cdc.gov/cholesterol/index.htm.   
+  
+- C. Sievert. Interactive Web-Based Data Visualization with R, plotly, and
   shiny. Chapman and Hall/CRC Florida, 2020.
+  
+- Cut down on Added Sugars - Health, health.gov/sites/default/files/2019-10/DGA_Cut-Down-On-Added-Sugars.pdf. Accessed 9 May 2023. 
+
+- “Fast Food Effects: Short-Term, Long-Term, Physical, Mental, and More.” Medical News Today, www.medicalnewstoday.com/articles/324847. Accessed 9 May 2023. 
+  
+- “Health and Wellness Banner Transparent PNG - 2298X624 - Free Download on Nicepng.” NicePNG.Com, www.nicepng.com/ourpic/u2e6y3r5i1t4e6u2_health-and-wellness-banner/. Accessed 9 May 2023. 
+
+- “High Cholesterol.” Mayo Clinic, 11 Jan. 2023, www.mayoclinic.org/diseases-conditions/high-blood-cholesterol/symptoms-causes/syc-20350800. 
   
 - Pedersen, Ulrik Thyge. “Fastfood Nutrition.” Kaggle, 21 Mar. 2023, https://www.kaggle.com/datasets/ulrikthygepedersen/fastfood-nutrition. 
 
@@ -1155,6 +1170,10 @@ mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE
 -  Slowikowski K (2023). _ggrepel: Automatically Position Non-Overlapping Text
   Labels with 'ggplot2'_. R package version 0.9.3,
   <https://CRAN.R-project.org/package=ggrepel>
+
+- Staff, Restaurant Business. “The Largest Mexican Chains in the U.S.” Restaurant Business, 13 May 2020, www.restaurantbusinessonline.com/financing/largest-mexican-chains-us. 
+
+- “The Sweet Danger of Sugar.” Harvard Health, 6 Jan. 2022, www.health.harvard.edu/heart-health/the-sweet-danger-of-sugar#:~:text=%22The%20effects%20of%20added%20sugar,%2C%22%20says%20Dr.%20Hu. 
   
 - Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G,
   Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K,
