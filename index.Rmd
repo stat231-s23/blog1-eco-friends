@@ -895,18 +895,21 @@ In 2020, Ireland’s Supreme Court announced its ruling in a years-long legal ba
 Why is this a problem? In the United States, the average adult consumes an estimated 17 teaspoons of sugar each day. That accounts for 14% of total calorie intake in adults following a 2,000-calorie diet. Consuming too much sugar can increase the risk of obesity, diabetes, and heart disease.
  
 ```{r}
+# -------- WRANGLING DATA --------
+
 #Selecting Variables
 subway_selected <- subway %>% 
   select(calories, sugar)%>%
   drop_na
 
-# set the seed for reproducibility
+# Set seed for reproducibility
 set.seed(23)
 
 # Perform k-means clustering with k = 3
 subway_ck <- subway_selected %>% 
   kmeans(centers = 3, nstart = 20)
 
+# Putting names of items back into our cluster data set
 subway_c <- augment(subway_ck, subway)
 ```
 
@@ -915,21 +918,27 @@ subway_c <- augment(subway_ck, subway)
 #### Scatterplot
 
 ```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
+
+# -------- CREATING SCATTERPLOT --------
+
 sub <- ggplot(subway_c, aes(x = calories, y = sugar, label = item)) + 
+  # Color points by clusters
   geom_point(aes(color = .cluster)) +
-  geom_text_repel(aes(label = item, color = .cluster), 
-                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  # Fix our axes
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
+  # Set labels
   labs(title = "Subway Items Grouped By on Calories and Sugar Content",
        x = "Calories (kcal)",
        y = "Sugar (grams)",
        color = "Cluster") +
+ # Choose theme and make adjustments
  theme_economist() +
  theme(plot.title = element_text(size=12, colour = "#2E5984"),
        axis.text = element_text(color = "#2E5984"),
        text = element_text(color = "#2E5984"))
-  
+
+# Output our visualization  
 ggplotly(sub)
 ```
 <center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
@@ -937,20 +946,25 @@ ggplotly(sub)
 #### Cluster Details
 
 ```{r}
-#Get Important Data Points and What items are in which cluster
+
+# -------- CREATING CLUSTER TABLES --------
+
+# Get information about items in clusters 
 subway_summaries <- tidy(subway_ck)%>%
     rename(Calories = calories, Sugar = sugar, 
            Size = size, Withiness = withinss)
 
 
+# Output table with summary statistics, colored by cluster.
 kable(subway_summaries) %>%
   row_spec(1, color = "#f54242") %>%
   row_spec(2, color = "#2abd09") %>%
   row_spec(3, color = "#42A7F5") 
 
+# Split our clusters by item
 clusterlist_subway <- split(subway$item, subway_ck$cluster)
 
-# make into dataframe to print nicely with kable
+# Making data frame for visualization
 subway_df <- matrix(NA
               , nrow=max(subway_summaries$Size)
               , ncol=length(subway_summaries$cluster))
@@ -961,6 +975,7 @@ for (i in 1:max(subway_ck$cluster)){
     subway_df[j,i] <- clusterlist_subway[[i]][j]
 }
 
+# Output table with items, colored by cluster.
 subway_df %>%
   kable(col.names = c("Mild Calorie, Mild Sugar Content", "High Calorie, High Sugar Content"
                       , "Low Calorie, Low Sugar Content"))%>%
@@ -973,9 +988,12 @@ subway_df %>%
 #### Matrix
 
 ```{r}
-# Scaling our variables
+
+# -------- CREATING MATRIX --------
+
+# Scale the variables
 subway_scaled <- subway_nochar %>%
-# Standardize all numeric variables (subtract mean and divide by SD)
+# Standardize all our numeric variables (subtract mean and divide by SD)
 mutate(across(where(is.numeric), ~scale(.)[,1], .names = "{.col}_scaled")) %>%
 select(calories_scaled, total_fat_scaled, protein_scaled, cholesterol_scaled, 
        sodium_scaled, total_carb_scaled, sugar_scaled) %>%
@@ -989,7 +1007,7 @@ kmeans(centers = 3, nstart = 20)
 subway_c_scaled <- augment(subway_kmeans_scaled, subway_scaled) %>%
 rename(cluster_scaled = .cluster)
 
-# Make some visualizations!
+# Make some visualizations, colored by cluster.
 ggpairs(subway_c_scaled, aes(color = cluster_scaled),
 columns = c("calories_scaled", "total_fat_scaled", "protein_scaled", "cholesterol_scaled", 
        "sodium_scaled", "total_carb_scaled", "sugar_scaled"),
@@ -1013,19 +1031,24 @@ Cholesterol is a waxy substance found in your blood. Your body needs cholesterol
 Taco Bell is home to a variety of Mexican-inspired foods, including tacos, burritos, quesadillas, and nachos. For many years, it has been the largest chain serving Mexican food in the United States with over 7,000 locations. The question is: Considering that almost 2 in 5 adults in the United States have high cholesterol, is Taco Bell a good choice for those at a higher risk of developing a heart condition?
 
 ```{r}
+
+# -------- WRANGLING DATA --------
+
 #Selecting Variables
 tacobell_selected <- tacobell %>% 
   select(calories, cholesterol)%>%
   drop_na
 
-# set the seed for reproducibility
+# Set seed for reproducibility
 set.seed(23)
 
 # Perform k-means clustering with k = 3
 tacobell_ck <- tacobell_selected %>% 
   kmeans(centers = 3, nstart = 20)
 
+# Putting names of items back into our cluster data set
 tacobell_c <- augment(tacobell_ck, tacobell)
+
 ```
 
 ### Calories and Cholesterol: {.tabset}
@@ -1033,19 +1056,24 @@ tacobell_c <- augment(tacobell_ck, tacobell)
 #### Scatterplot
 
 ```{r, fig.width = 8, fig.height = 4, fig.align = 'center'}
+
+# -------- CREATING SCATTERPLOT --------
+
 tb <- ggplot(tacobell_c, aes(label = item, x = calories, y = cholesterol)) + 
+  # Color points by clusters
   geom_point(aes(color = .cluster)) +
-  geom_text_repel(aes(label = item, color = .cluster), 
-                  size = 2, max.overlaps = 200, show.legend = FALSE) +
+  # Set labels
   labs(title = "Taco Bell Items Grouped By on Calories and Cholesterol",
        x = "Calories (kcal)",
        y = "Cholesterol (grams)",
        color = "Cluster") +
+ # Choose theme and make adjustments
  theme_economist() +
  theme(plot.title = element_text(size=12, colour = "#2E5984"),
        axis.text = element_text(color = "#2E5984"),
        text = element_text(color = "#2E5984"))
-  
+
+# Output our visualization   
 ggplotly(tb)
 ```
 <center>*Click on the points to learn more about the menu items or click on the legend to isolate the clusters.*</center>
@@ -1053,19 +1081,24 @@ ggplotly(tb)
 #### Cluster Details
 
 ```{r}
-#Get Important Data Points and What items are in which cluster
+
+# -------- CREATING CLUSTER TABLES --------
+
+# Get information about items in clusters 
 tacobell_summaries <- tidy(tacobell_ck)%>%
     rename(Calories = calories, Cholesterol = cholesterol, 
            Size = size, Withiness = withinss)
 
+# Output table with summary statistics, colored by cluster.
 kable(tacobell_summaries) %>%
   row_spec(1, color = "#f54242") %>%
   row_spec(2, color = "#2abd09") %>%
   row_spec(3, color = "#42A7F5") 
 
+# Split our clusters by item
 clusterlist_tacobell <- split(tacobell$item, tacobell_ck$cluster)
 
-# make into dataframe to print nicely with kable
+# Making data frame for visualization
 tacobell_df <- matrix(NA
               , nrow=max(tacobell_summaries$Size)
               , ncol=length(tacobell_summaries$cluster))
@@ -1076,19 +1109,24 @@ for (i in 1:max(tacobell_ck$cluster)){
     tacobell_df[j,i] <- clusterlist_tacobell[[i]][j]
 }
 
+# Output table with items, colored by cluster.
 tacobell_df %>%
   kable(col.names = c("Low Calorie, Low Cholesterol", "High Calorie, High Cholesterol", "Mild Calorie, Mild Cholesterol")) %>%
   column_spec(1, color = "#f54242") %>%
   column_spec(2, color = "#2abd09") %>%
   column_spec(3, color = "#42A7F5") 
+
 ```
 
 #### Matrix
 
 ```{r, message=FALSE}
-# Scaling our variables
+
+# -------- CREATING MATRIX --------
+
+# Scale the variables
 tacobell_scaled <- tacobell_nochar %>%
-# Standardize all numeric variables (subtract mean and divide by SD)
+# Standardize all our numeric variables (subtract mean and divide by SD)
 mutate(across(where(is.numeric), ~scale(.)[,1], .names = "{.col}_scaled")) %>%
 select(calories_scaled, total_fat_scaled, protein_scaled, cholesterol_scaled, 
        sodium_scaled, total_carb_scaled, sugar_scaled) %>%
@@ -1102,12 +1140,13 @@ kmeans(centers = 3, nstart = 20)
 tacobell_c_scaled <- augment(tacobell_kmeans_scaled, tacobell_scaled) %>%
 rename(cluster_scaled = .cluster)
 
-# Make some visualizations!
+# # Make some visualizations, colored by cluster.
 ggpairs(tacobell_c_scaled, aes(color = cluster_scaled),
 columns = c("calories_scaled", "total_fat_scaled", "protein_scaled", "cholesterol_scaled", 
        "sodium_scaled", "total_carb_scaled", "sugar_scaled"),
 upper = list(continuous = "blank")) +
 theme(text = element_text(size = 8))
+
 ```
 
 ### What Should I Order?
@@ -1125,7 +1164,8 @@ The map below depicts only a fraction of the true amount of locations for the ei
 
 ```{r, echo=FALSE}
 # Generate Map
-mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name")
+mapview(restmap, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, zcol = "name", legend = TRUE,
+layer.name = 'Restaurant')
 ```
 <center>*Click a point on the map to learn more about the restaurant located there.*</center>
 
