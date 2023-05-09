@@ -176,7 +176,7 @@ arb <- ggplot(arb_clusters_c4, aes(x = calories, y = protein, color = .cluster, 
   scale_y_continuous(breaks = scales::breaks_width(25)) +
 
   labs(title = "Arby's Menu Items Grouped Based on Calories and Protein",
-       x = "Calories (kilocalories)",
+       x = "Calories (kcal)",
        y = "Protein (grams)",
        color = "Cluster") +
   xlim(c(0,1200)) +
@@ -302,7 +302,7 @@ bk <- ggplot(bk_clusters_c3, aes(x = calories, y = protein, color = .cluster, la
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Burger King Menu Items Grouped Based on Calories and Protein",
-       x = "Calories (kilocalories)",
+       x = "Calories (kcal)",
        y = "Protein (grams)",
        color = "Cluster") +
   xlim(c(0,1500)) +
@@ -421,7 +421,7 @@ chfa <- ggplot(chf_clusters_c3, aes(x = calories, y = sodium, color = .cluster, 
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Chick-fil-A Menu Items Grouped Based on Calories and Sodium",
-       x = "Calories (kilocalories)",
+       x = "Calories (kcal)",
        y = "Sodium (milligrams)",
        color = "Cluster") +
   xlim(c(0,1200)) +
@@ -542,8 +542,8 @@ dq <- ggplot(dq_clusers_c5, aes(x = calories, y = total_fat, colors = .cluster, 
   scale_x_continuous(breaks = scales::breaks_width(100)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Dairy Queen Menu Items Grouped Based on Calories and Total Fat",
-       x = "Calories",
-       y = "Total Fat",
+       x = "Calories (kcal)",
+       y = "Total Fat (grams)",
        color = "Cluster") +
   theme_economist() +
   theme(plot.title = element_text(size=12, colour = "#2E5984"),
@@ -668,8 +668,8 @@ mcd <- ggplot(mcd_clusers_c4, aes(x = calories, y = total_fat, label = item)) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "McDonalds Menu Items Grouped Based on Calories and Total Fat",
-       x = "Calories",
-       y = "Total Fat",
+       x = "Calories (kcal)",
+       y = "Total Fat (grams)",
        color = "Cluster") +
   theme_economist() +
   theme(plot.title = element_text(size=12, colour = "#2E5984"),
@@ -795,8 +795,8 @@ son <- ggplot(sonic_clusers_c3, aes(x = calories, y = protein, label = item)) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Sonic Menu Items Grouped Based on Calories and Protein",
-       x = "Calories",
-       y = "Protein",
+       x = "Calories (kcal)",
+       y = "Protein (grams)",
        color = "Cluster") +
  theme_economist() +
  theme(plot.title = element_text(size=12, colour = "#2E5984"),
@@ -922,8 +922,8 @@ sub <- ggplot(subway_c, aes(x = calories, y = sugar, label = item)) +
   scale_x_continuous(breaks = scales::breaks_width(200)) +
   scale_y_continuous(breaks = scales::breaks_width(25)) +
   labs(title = "Subway Items Grouped By on Calories and Sugar Content",
-       x = "Calories",
-       y = "Sugar",
+       x = "Calories (kcal)",
+       y = "Sugar (grams)",
        color = "Cluster") +
  theme_economist() +
  theme(plot.title = element_text(size=12, colour = "#2E5984"),
@@ -1038,8 +1038,8 @@ tb <- ggplot(tacobell_c, aes(label = item, x = calories, y = cholesterol)) +
   geom_text_repel(aes(label = item, color = .cluster), 
                   size = 2, max.overlaps = 200, show.legend = FALSE) +
   labs(title = "Taco Bell Items Grouped By on Calories and Cholesterol",
-       x = "Calories",
-       y = "Cholesterol",
+       x = "Calories (kcal)",
+       y = "Cholesterol (grams)",
        color = "Cluster") +
  theme_economist() +
  theme(plot.title = element_text(size=12, colour = "#2E5984"),
